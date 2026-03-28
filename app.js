@@ -923,10 +923,38 @@ function toggleHint() { showPinyinHint = !showPinyinHint; renderCard(); }
 // ============================================================
 var mineWriteMode = null;
 var isDrawing = false;
-var canvasCtx = null;
+var mineCanvasCtxs = []; // array of canvas contexts (one per character)
+var mineCanvasCount = 0;
 
 function renderMineCard(word) {
+  var chars = word.chinese.split('');
+  mineCanvasCount = chars.length;
   var ttsBtnLg = '<button class="tts-btn tts-btn-large" onclick="playTTS()" id="tts-btn">' + mcIcon('note_block', 32) + '</button>';
+
+  // Build canvas boxes HTML
+  var canvasBoxes = '';
+  for (var i = 0; i < chars.length; i++) {
+    canvasBoxes += '<div class="mine-canvas-box">' +
+      '<canvas class="mine-char-canvas" id="mine-canvas-' + i + '" width="500" height="500"></canvas>' +
+      '<div class="mine-canvas-footer">' +
+        '<span class="mine-canvas-label">' + (i + 1) + '</span>' +
+        '<button class="mine-canvas-clear" onclick="clearSingleCanvas(' + i + ')">' + mcIcon('tnt_side', 16) + '</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // Layout class based on char count
+  var gridClass = chars.length <= 3 ? 'mine-grid-row' : 'mine-grid-2x2';
+
+  // Build verify section with per-character display
+  var verifyChars = '';
+  for (var j = 0; j < chars.length; j++) {
+    verifyChars += '<div class="mine-verify-char">' +
+      '<div class="mine-verify-correct" lang="zh-CN">' + chars[j] + '</div>' +
+      '<div class="mine-verify-drawing" id="mine-verify-draw-' + j + '"></div>' +
+    '</div>';
+  }
+
   return '<div class="card-prompt">Listen and write the word!</div>' +
     '<div class="card-english">' + word.english + '</div>' + ttsBtnLg +
     '<div class="mine-choice" id="mine-choice">' +
@@ -936,10 +964,9 @@ function renderMineCard(word) {
         mcIcon('book', 24) + ' Write on Paper</button>' +
     '</div>' +
     '<div id="mine-canvas-area" style="display:none">' +
-      '<div class="canvas-controls">' +
-        '<button class="tts-btn" onclick="clearCanvas()" style="width:50px;height:50px">' + mcIcon('tnt_side', 24) + '</button>' +
+      '<div class="mine-canvas-grid ' + gridClass + '" id="mine-canvas-grid" style="--char-count:' + chars.length + '">' +
+        canvasBoxes +
       '</div>' +
-      '<div class="draw-canvas-wrap" id="canvas-wrap"><canvas id="draw-canvas" width="600" height="600"></canvas></div>' +
       '<button class="mc-btn mc-btn-gold" onclick="mineCheck()" style="width:100%;max-width:300px;margin:8px auto;font-size:10px">CHECK IT</button>' +
     '</div>' +
     '<div id="mine-paper-area" style="display:none;text-align:center;padding:16px">' +
@@ -947,13 +974,8 @@ function renderMineCard(word) {
       '<button class="mc-btn mc-btn-gold" onclick="mineCheck()" style="width:100%;max-width:300px;margin:0 auto;font-size:10px">SHOW ANSWER</button>' +
     '</div>' +
     '<div id="mine-verify" style="display:none">' +
-      '<div class="mine-verify-row">' +
-        '<div class="mine-verify-side" id="mine-verify-left"></div>' +
-        '<div class="mine-verify-side">' +
-          '<div class="card-chinese" lang="zh-CN" style="font-size:72px">' + word.chinese + '</div>' +
-          '<div class="card-pinyin">' + word.pinyin + '</div>' +
-        '</div>' +
-      '</div>' +
+      '<div class="mine-verify-chars-row">' + verifyChars + '</div>' +
+      '<div class="card-pinyin" style="text-align:center;margin-top:8px">' + word.pinyin + '</div>' +
       '<div class="mine-countdown" id="mine-countdown" style="display:none">' +
         '<div class="countdown-text" style="font-family:\'Press Start 2P\';font-size:clamp(5px,0.9vw,8px);color:#FFD700;text-shadow:1px 1px 0 #000;margin-bottom:4px;text-align:center">Check carefully... 3</div>' +
         '<div class="countdown-bar-container"><div class="countdown-bar-fill" id="mine-countdown-fill"></div></div>' +
@@ -968,20 +990,34 @@ function renderMineCard(word) {
 function mineChoose(mode) {
   mineWriteMode = mode;
   document.getElementById('mine-choice').style.display = 'none';
-  if (mode === 'ipad') { document.getElementById('mine-canvas-area').style.display = 'block'; setupCanvas(); }
-  else { document.getElementById('mine-paper-area').style.display = 'block'; }
+  if (mode === 'ipad') {
+    document.getElementById('mine-canvas-area').style.display = 'block';
+    setupMineCanvases();
+  } else {
+    document.getElementById('mine-paper-area').style.display = 'block';
+  }
 }
 
 function mineCheck() {
   var word = sessionQueue[sessionIndex];
   document.getElementById('mine-canvas-area').style.display = 'none';
   document.getElementById('mine-paper-area').style.display = 'none';
-  var left = document.getElementById('mine-verify-left');
+
+  // Populate verify drawings
   if (mineWriteMode === 'ipad') {
-    var canvas = document.getElementById('draw-canvas');
-    if (canvas) { var img = canvas.toDataURL('image/png'); left.innerHTML = '<img src="' + img + '" style="width:140px;height:140px;border:3px solid var(--dirt);background:var(--cream)">'; }
+    for (var i = 0; i < mineCanvasCount; i++) {
+      var canvas = document.getElementById('mine-canvas-' + i);
+      var slot = document.getElementById('mine-verify-draw-' + i);
+      if (canvas && slot) {
+        var img = canvas.toDataURL('image/png');
+        slot.innerHTML = '<img src="' + img + '" class="mine-verify-img">';
+      }
+    }
   } else {
-    left.innerHTML = '<div style="display:flex;justify-content:center">' + mcIcon('paper', 64) + '</div><div style="font-size:8px;color:var(--stone);margin-top:8px">Your paper</div>';
+    for (var j = 0; j < mineCanvasCount; j++) {
+      var slot2 = document.getElementById('mine-verify-draw-' + j);
+      if (slot2) slot2.innerHTML = '<div style="display:flex;justify-content:center">' + mcIcon('paper', 40) + '</div>';
+    }
   }
   document.getElementById('mine-verify').style.display = 'block';
   speakChinese(word.chinese);
@@ -1104,31 +1140,66 @@ function mineMarkWrong(word) {
   setTimeout(function() { sessionIndex++; renderCard(); updateCreeper('idle'); }, 600);
 }
 
-// ========== CANVAS ==========
-function setupCanvas() {
-  var canvas = document.getElementById('draw-canvas');
-  if (!canvas) return;
-  canvasCtx = canvas.getContext('2d');
-  canvasCtx.strokeStyle = '#1a1a1a';
-  canvasCtx.lineWidth = 10;
-  canvasCtx.lineCap = 'round';
-  canvasCtx.lineJoin = 'round';
-  canvas.addEventListener('touchstart', canvasTouchStart, { passive: false });
-  canvas.addEventListener('touchmove', canvasTouchMove, { passive: false });
-  canvas.addEventListener('touchend', canvasTouchEnd, { passive: false });
-  canvas.addEventListener('mousedown', canvasMouseDown);
-  canvas.addEventListener('mousemove', canvasMouseMove);
-  canvas.addEventListener('mouseup', canvasMouseUp);
+// ========== MULTI-CANVAS DRAWING ==========
+var activeCanvasCtx = null; // whichever canvas is currently being drawn on
+
+function setupMineCanvases() {
+  mineCanvasCtxs = [];
+  for (var i = 0; i < mineCanvasCount; i++) {
+    var canvas = document.getElementById('mine-canvas-' + i);
+    if (!canvas) continue;
+    var ctx = canvas.getContext('2d');
+    ctx.strokeStyle = '#1a1a1a';
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    mineCanvasCtxs.push(ctx);
+
+    // Touch events — each canvas independently drawn
+    canvas.addEventListener('touchstart', canvasTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', canvasTouchMove, { passive: false });
+    canvas.addEventListener('touchend', canvasTouchEnd, { passive: false });
+    canvas.addEventListener('mousedown', canvasMouseDown);
+    canvas.addEventListener('mousemove', canvasMouseMove);
+    canvas.addEventListener('mouseup', canvasMouseUp);
+  }
 }
+
 function getTouchPos(canvas, touch) { var r = canvas.getBoundingClientRect(); return { x: (touch.clientX - r.left) * (canvas.width / r.width), y: (touch.clientY - r.top) * (canvas.height / r.height) }; }
 function getMousePos(canvas, e) { var r = canvas.getBoundingClientRect(); return { x: (e.clientX - r.left) * (canvas.width / r.width), y: (e.clientY - r.top) * (canvas.height / r.height) }; }
-function canvasTouchStart(e) { e.preventDefault(); isDrawing = true; var p = getTouchPos(e.target, e.touches[0]); canvasCtx.beginPath(); canvasCtx.moveTo(p.x, p.y); }
-function canvasTouchMove(e) { e.preventDefault(); if (!isDrawing) return; var p = getTouchPos(e.target, e.touches[0]); canvasCtx.lineTo(p.x, p.y); canvasCtx.stroke(); }
+
+function canvasTouchStart(e) {
+  e.preventDefault(); isDrawing = true;
+  activeCanvasCtx = e.target.getContext('2d');
+  var p = getTouchPos(e.target, e.touches[0]);
+  activeCanvasCtx.beginPath(); activeCanvasCtx.moveTo(p.x, p.y);
+}
+function canvasTouchMove(e) {
+  e.preventDefault(); if (!isDrawing || !activeCanvasCtx) return;
+  var p = getTouchPos(e.target, e.touches[0]);
+  activeCanvasCtx.lineTo(p.x, p.y); activeCanvasCtx.stroke();
+}
 function canvasTouchEnd(e) { e.preventDefault(); isDrawing = false; }
-function canvasMouseDown(e) { isDrawing = true; var p = getMousePos(e.target, e); canvasCtx.beginPath(); canvasCtx.moveTo(p.x, p.y); }
-function canvasMouseMove(e) { if (!isDrawing) return; var p = getMousePos(e.target, e); canvasCtx.lineTo(p.x, p.y); canvasCtx.stroke(); }
+function canvasMouseDown(e) {
+  isDrawing = true;
+  activeCanvasCtx = e.target.getContext('2d');
+  var p = getMousePos(e.target, e);
+  activeCanvasCtx.beginPath(); activeCanvasCtx.moveTo(p.x, p.y);
+}
+function canvasMouseMove(e) {
+  if (!isDrawing || !activeCanvasCtx) return;
+  var p = getMousePos(e.target, e);
+  activeCanvasCtx.lineTo(p.x, p.y); activeCanvasCtx.stroke();
+}
 function canvasMouseUp() { isDrawing = false; }
-function clearCanvas() { var c = document.getElementById('draw-canvas'); if (c && canvasCtx) canvasCtx.clearRect(0, 0, c.width, c.height); }
+
+function clearSingleCanvas(idx) {
+  var c = document.getElementById('mine-canvas-' + idx);
+  if (c) { var ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height); }
+}
+function clearCanvas() {
+  for (var i = 0; i < mineCanvasCount; i++) clearSingleCanvas(i);
+}
 
 // ============================================================
 //  CARD ACTIONS (shared)
