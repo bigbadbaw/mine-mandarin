@@ -20,28 +20,24 @@ var inputLocked = false;
 var requeuedWords = [];
 
 // ========== CREEPER SVG CONSTANT ==========
-var CREEPER_SVG_STRING = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;width:100%;height:100%">' +
-  '<rect x="8" y="0" width="48" height="64" fill="#5BA145"/>' +
-  '<rect x="0" y="8" width="64" height="48" fill="#5BA145"/>' +
-  '<rect x="8" y="0" width="4" height="4" fill="#3D7A2D"/>' +
-  '<rect x="52" y="0" width="4" height="4" fill="#3D7A2D"/>' +
-  '<rect x="8" y="60" width="4" height="4" fill="#3D7A2D"/>' +
-  '<rect x="52" y="60" width="4" height="4" fill="#3D7A2D"/>' +
-  '<rect x="12" y="0" width="40" height="4" fill="#6BCF57"/>' +
-  '<rect x="8" y="4" width="4" height="4" fill="#6BCF57"/>' +
-  '<rect x="52" y="4" width="4" height="4" fill="#6BCF57"/>' +
-  '<g id="left-eye"><rect x="12" y="16" width="16" height="16" fill="#1A0F00"/><rect x="16" y="20" width="8" height="8" fill="#0A0000"/></g>' +
-  '<g id="right-eye"><rect x="36" y="16" width="16" height="16" fill="#1A0F00"/><rect x="40" y="20" width="8" height="8" fill="#0A0000"/></g>' +
-  '<rect x="24" y="32" width="16" height="4" fill="#1A0F00"/>' +
-  '<rect x="16" y="36" width="8" height="8" fill="#1A0F00"/>' +
-  '<rect x="40" y="36" width="8" height="8" fill="#1A0F00"/>' +
-  '<rect x="24" y="36" width="16" height="4" fill="#5BA145"/>' +
-  '<rect x="20" y="44" width="8" height="8" fill="#1A0F00"/>' +
-  '<rect x="36" y="44" width="8" height="8" fill="#1A0F00"/>' +
-  '<rect x="24" y="48" width="16" height="4" fill="#1A0F00"/>' +
-  '<rect x="28" y="44" width="8" height="8" fill="#5BA145"/>' +
-  '<rect x="24" y="44" width="4" height="4" fill="#5BA145"/>' +
-  '<rect x="36" y="44" width="4" height="4" fill="#5BA145"/>' +
+var CREEPER_SVG_STRING = '<svg viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;display:block;width:100%;height:100%">' +
+  '<rect x="0" y="0" width="1080" height="1080" fill="rgb(29, 181, 60)"/>' +
+  '<g transform="matrix(1, 0, 0, 1, 1.534, -73.165)">' +
+    '<rect x="162.98" y="225.18" width="240.09" height="229.043" fill="rgb(0,0,0)"/>' +
+    '<rect x="163.213" y="225.574" width="64.832" height="228.084" fill="rgb(7, 62, 33)"/>' +
+    '<rect x="163.291" y="223.08" width="239.415" height="43.174" fill="rgb(8, 61, 32)"/>' +
+  '</g>' +
+  '<g transform="matrix(1, 0, 0, 1, 486.138, -59.903)">' +
+    '<rect x="162.98" y="225.18" width="240.09" height="229.043" fill="rgb(0,0,0)"/>' +
+    '<rect x="339.636" y="222.239" width="64.832" height="232.013" fill="rgb(7, 62, 33)"/>' +
+    '<rect x="163.291" y="223.08" width="239.415" height="43.174" fill="rgb(8, 61, 32)"/>' +
+  '</g>' +
+  '<rect x="407.652" y="496.72" width="229.654" height="288.882" fill="rgb(0,0,0)"/>' +
+  '<rect x="408.112" y="443.469" width="229.654" height="58.917" fill="rgb(8, 61, 32)"/>' +
+  '<rect x="292.922" y="502.117" width="114.094" height="62.302" fill="rgb(8, 61, 32)"/>' +
+  '<rect x="638.473" y="502.591" width="114.244" height="62.302" fill="rgb(8, 61, 32)"/>' +
+  '<rect x="636.169" y="565.958" width="116.499" height="393.218" fill="rgb(0,0,0)"/>' +
+  '<rect x="293.611" y="562.607" width="116.499" height="393.218" fill="rgb(0,0,0)"/>' +
   '</svg>';
 
 // ========== PASSWORD GATE ==========
