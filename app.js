@@ -135,6 +135,9 @@ function initApp() {
   // Check mic on startup for standalone mode
   checkMicOnStartup();
 
+  // Show browser compatibility banner if needed
+  showBrowserCompatBanner();
+
   // Fix orientation change jitter — disable transitions during rotation
   window.addEventListener('orientationchange', function() {
     document.body.classList.add('no-transitions');
@@ -291,7 +294,7 @@ function updateNavButtons() {
 }
 
 function goHome() {
-  recognitionActive = false;
+  cleanupMicAndTTS();
   showScreen('home-screen');
   renderHome();
 }
@@ -343,6 +346,8 @@ function openModeSelector() {
 
 // ========== START MODULE ==========
 function startModule(module) {
+  // Clean up mic/TTS from previous module
+  cleanupMicAndTTS();
   currentModule = module;
 
   if (module === 'enchant') {
@@ -620,6 +625,72 @@ function toggleEnchantFilter() {
 var speechRecAvailable = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 var recognitionActive = false;
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+var isIPhone = /iPhone/.test(navigator.userAgent);
+var micPermissionCached = false; // once confirmed, skip pre-check on iPad
+var activeMicStream = null;
+var activeRecognition = null;
+
+// Stop mic + TTS when app goes to background or loses focus
+function cleanupMicAndTTS() {
+  if (activeMicStream) {
+    activeMicStream.getTracks().forEach(function(t) { t.stop(); });
+    activeMicStream = null;
+  }
+  if (activeRecognition) {
+    try { activeRecognition.abort(); } catch(e) {}
+    activeRecognition = null;
+  }
+  recognitionActive = false;
+  hideListeningUI();
+  window.speechSynthesis.cancel();
+}
+
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    cleanupMicAndTTS();
+  } else {
+    // App returned to foreground — reset state cleanly
+    recognitionActive = false;
+    micPermissionCached = false;
+    hideListeningUI();
+  }
+});
+
+window.addEventListener('blur', function() {
+  cleanupMicAndTTS();
+});
+
+// Detect non-Safari iOS or Firefox for compatibility banner
+var isIOSSafari = isIOS && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|EdgiOS/.test(navigator.userAgent);
+var isFirefox = /Firefox/.test(navigator.userAgent) && !isIOS;
+var isIOSNonSafari = isIOS && !isIOSSafari;
+
+function showBrowserCompatBanner() {
+  if (localStorage.getItem('mm_browser_banner_dismissed')) return;
+  var msg = '';
+  if (isIOSNonSafari) {
+    msg = 'For best experience use Safari on iPhone/iPad';
+  } else if (isFirefox) {
+    msg = 'Firefox does not support microphone — Read & Say and Say It In Chinese will use self-grade mode';
+  } else {
+    return; // no banner needed
+  }
+
+  var banner = document.createElement('div');
+  banner.id = 'browser-compat-banner';
+  banner.innerHTML = '<span>' + msg + '</span><button onclick="dismissBrowserBanner()">OK</button>';
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99990;background:#1A1A2E;color:#FFD700;' +
+    'font-family:\'Press Start 2P\',monospace;font-size:clamp(5px,0.9vw,8px);padding:12px 16px;' +
+    'display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;' +
+    'border-bottom:3px solid #FFD700;text-shadow:1px 1px 0 #000;text-align:center;line-height:1.8;';
+  document.body.appendChild(banner);
+}
+
+function dismissBrowserBanner() {
+  localStorage.setItem('mm_browser_banner_dismissed', 'true');
+  var b = document.getElementById('browser-compat-banner');
+  if (b) b.remove();
+}
 
 function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -627,12 +698,20 @@ function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
   if (recognitionActive) return;
   recognitionActive = true;
 
-  // iOS: always do getUserMedia pre-check before every recognition attempt
-  // iPhone is stricter than iPad about mic access in standalone/PWA mode
+  // Cancel any TTS that might interfere with mic capture
+  window.speechSynthesis.cancel();
+
+  // iOS mic pre-check:
+  // iPhone: always pre-check (strictest about mic in standalone/PWA)
+  // iPad: pre-check once per session, then cache result
   var micPreCheck;
-  if (isIOS && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  var needsPreCheck = isIOS && navigator.mediaDevices && navigator.mediaDevices.getUserMedia &&
+    (isIPhone || !micPermissionCached);
+
+  if (needsPreCheck) {
     micPreCheck = navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
       stream.getTracks().forEach(function(track) { track.stop(); });
+      micPermissionCached = true;
       console.log('[Mic] Pre-check: permission active');
     }).catch(function(err) {
       console.warn('[Mic] Pre-check failed:', err.name);
@@ -649,6 +728,7 @@ function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
 
   micPreCheck.then(function() {
     var recognition = new SR();
+    activeRecognition = recognition; // store for background cleanup
     recognition.lang = 'zh-CN';
     recognition.interimResults = false;
     recognition.maxAlternatives = 5;
@@ -659,11 +739,11 @@ function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
 
     recognition.onstart = function() {
       showListeningUI();
-      // iPhone cuts off after ~5s silence — show timeout prompt if no result
       recTimeout = setTimeout(function() {
         if (!resultReceived) {
           console.warn('[Mic] 5s timeout — no result received');
           try { recognition.abort(); } catch(e) {}
+          activeRecognition = null;
           recognitionActive = false;
           hideListeningUI();
           showNoSpeechUI();
@@ -673,10 +753,11 @@ function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
 
     recognition.onresult = function(event) {
       resultReceived = true;
+      activeRecognition = null;
       if (recTimeout) clearTimeout(recTimeout);
       hideListeningUI();
       var alternatives = Array.from(event.results[0]).map(function(r) { return r.transcript.trim(); });
-      console.log('Heard:', alternatives);
+      console.log('[Mic] Heard:', alternatives);
       var normalize = function(s) { return s.replace(/\s+/g, '').toLowerCase(); };
       var matched = alternatives.some(function(t) {
         return normalize(t) === normalize(expectedText) || t.includes(expectedText);
@@ -686,38 +767,53 @@ function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
     };
 
     recognition.onerror = function(event) {
-      console.error('Speech recognition error:', event.error);
+      console.error('[Mic] Error type:', event.error);
       if (recTimeout) clearTimeout(recTimeout);
+      activeRecognition = null;
       hideListeningUI();
       resultReceived = true;
       if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
         speechRecAvailable = false;
+        showMicDeniedBanner();
         onUnavailable();
       } else if (event.error === 'no-speech') {
         showNoSpeechUI();
+      } else if (event.error === 'network') {
+        showMicErrorUI('Network error — try WiFi');
+      } else if (event.error === 'audio-capture') {
+        showMicErrorUI('Mic not found');
       } else {
+        console.warn('[Mic] Unhandled error:', event.error);
         onFail('');
       }
     };
 
     recognition.onend = function() {
       if (recTimeout) clearTimeout(recTimeout);
+      activeRecognition = null;
       recognitionActive = false;
       hideListeningUI();
       if (!resultReceived) {
-        console.warn('Recognition ended with no result — iOS Safari issue');
+        console.warn('[Mic] Recognition ended with no result — iOS issue');
         showNoSpeechUI();
       }
     };
 
     setTimeout(function() {
       try { recognition.start(); }
-      catch(e) { console.error('recognition.start() error:', e); recognitionActive = false; speechRecAvailable = false; onUnavailable(); }
+      catch(e) { console.error('[Mic] start() error:', e); activeRecognition = null; recognitionActive = false; speechRecAvailable = false; onUnavailable(); }
     }, 100);
   }).catch(function() {
-    // Pre-check rejected — already handled above
     recognitionActive = false;
   });
+}
+
+function showMicErrorUI(msg) {
+  var label = document.getElementById('mic-label');
+  var btn = document.getElementById('mic-btn');
+  if (label) label.textContent = msg;
+  if (btn) { btn.classList.remove('listening'); btn.classList.add('no-speech');
+    setTimeout(function() { if (btn) btn.classList.remove('no-speech'); if (label) label.textContent = 'SAY IT!'; }, 3000); }
 }
 
 var showNoSpeechUI = function() {
