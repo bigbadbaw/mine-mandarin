@@ -929,6 +929,7 @@ var mineCanvasCount = 0;
 function renderMineCard(word) {
   var chars = word.chinese.split('');
   mineCanvasCount = chars.length;
+  console.log('[Mine] Word: ' + word.chinese + ' | Characters: ' + chars.length + ' | Canvases: ' + chars.join(', '));
   var ttsBtnLg = '<button class="tts-btn tts-btn-large" onclick="playTTS()" id="tts-btn">' + mcIcon('note_block', 32) + '</button>';
 
   // Build canvas boxes HTML
