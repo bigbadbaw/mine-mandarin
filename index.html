@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mine Mandarin">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAACvElEQVR4nO3dsUkEURRA0VHsQgysw8AKBGswtgoLsYTtYZHFTCxBBQODrUFjwxE++9d7Tjwwn4HLSx5/Ts5vzr8XiDo99AHgkARAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIOxv9gtuH29Gv4Ig8bZ5XPb9//VpGMgFIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBt+C7QWu9vn4c+AiEmAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadPcC7e62y0yuHq+XYzbb97y4v1xmYgKQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadP8IO/Z/cs1mtu/58fJx6CP8YgKQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadLtAs9ndbZdjNtsu0GxMANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQJoASMvtAo3e7Rm9e7P2/Gufv4rtDpkApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGm5e4HW3nsz+h6e0Wr3/KxlApAmANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQFpuF2gtuzT/mwlAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkDb8XqCnzfPoV8CfmQCkCYA0AZAmANIEQJoASBMAaQIgTQCkCYA0AZA2fBdo//o1+hXwZyYAaQIgTQCkCYA0AZAmANIEQJoASBMAaQIgTQAsZT+HCyzujmJhPAAAAABJRU5ErkJggg==">
+  <link rel="apple-touch-icon" sizes="152x152" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAACvElEQVR4nO3dsUkEURRA0VHsQgysw8AKBGswtgoLsYTtYZHFTCxBBQODrUFjwxE++9d7Tjwwn4HLSx5/Ts5vzr8XiDo99AHgkARAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIOxv9gtuH29Gv4Ig8bZ5XPb9//VpGMgFIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBt+C7QWu9vn4c+AiEmAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadPcC7e62y0yuHq+XYzbb97y4v1xmYgKQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadP8IO/Z/cs1mtu/58fJx6CP8YgKQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadLtAs9ndbZdjNtsu0GxMANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQJoASMvtAo3e7Rm9e7P2/Gufv4rtDpkApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGm5e4HW3nsz+h6e0Wr3/KxlApAmANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQFpuF2gtuzT/mwlAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkDb8XqCnzfPoV8CfmQCkCYA0AZAmANIEQJoASBMAaQIgTQCkCYA0AZA2fBdo//o1+hXwZyYAaQIgTQCkCYA0AZAmANIEQJoASBMAaQIgTQAsZT+HCyzujmJhPAAAAABJRU5ErkJggg==">
+  <link rel="apple-touch-icon" sizes="167x167" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAACvElEQVR4nO3dsUkEURRA0VHsQgysw8AKBGswtgoLsYTtYZHFTCxBBQODrUFjwxE++9d7Tjwwn4HLSx5/Ts5vzr8XiDo99AHgkARAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIOxv9gtuH29Gv4Ig8bZ5XPb9//VpGMgFIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBt+C7QWu9vn4c+AiEmAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadPcC7e62y0yuHq+XYzbb97y4v1xmYgKQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadP8IO/Z/cs1mtu/58fJx6CP8YgKQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadLtAs9ndbZdjNtsu0GxMANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQJoASMvtAo3e7Rm9e7P2/Gufv4rtDpkApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGm5e4HW3nsz+h6e0Wr3/KxlApAmANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQFpuF2gtuzT/mwlAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkDb8XqCnzfPoV8CfmQCkCYA0AZAmANIEQJoASBMAaQIgTQCkCYA0AZA2fBdo//o1+hXwZyYAaQIgTQCkCYA0AZAmANIEQJoASBMAaQIgTQAsZT+HCyzujmJhPAAAAABJRU5ErkJggg==">
+  <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAACvElEQVR4nO3dsUkEURRA0VHsQgysw8AKBGswtgoLsYTtYZHFTCxBBQODrUFjwxE++9d7Tjwwn4HLSx5/Ts5vzr8XiDo99AHgkARAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIOxv9gtuH29Gv4Ig8bZ5XPb9//VpGMgFIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBt+C7QWu9vn4c+AiEmAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadPcC7e62y0yuHq+XYzbb97y4v1xmYgKQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadP8IO/Z/cs1mtu/58fJx6CP8YgKQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadLtAs9ndbZdjNtsu0GxMANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQJoASMvtAo3e7Rm9e7P2/Gufv4rtDpkApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGm5e4HW3nsz+h6e0Wr3/KxlApAmANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQFpuF2gtuzT/mwlAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkDb8XqCnzfPoV8CfmQCkCYA0AZAmANIEQJoASBMAaQIgTQCkCYA0AZA2fBdo//o1+hXwZyYAaQIgTQCkCYA0AZAmANIEQJoASBMAaQIgTQAsZT+HCyzujmJhPAAAAABJRU5ErkJggg==">
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAACvElEQVR4nO3dsUkEURRA0VHsQgysw8AKBGswtgoLsYTtYZHFTCxBBQODrUFjwxE++9d7Tjwwn4HLSx5/Ts5vzr8XiDo99AHgkARAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIOxv9gtuH29Gv4Ig8bZ5XPb9//VpGMgFIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBt+C7QWu9vn4c+AiEmAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadPcC7e62y0yuHq+XYzbb97y4v1xmYgKQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadP8IO/Z/cs1mtu/58fJx6CP8YgKQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBEDadLtAs9ndbZdjNtsu0GxMANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQJoASMvtAo3e7Rm9e7P2/Gufv4rtDpkApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGm5e4HW3nsz+h6e0Wr3/KxlApAmANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQFpuF2gtuzT/mwlAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkDb8XqCnzfPoV8CfmQCkCYA0AZAmANIEQJoASBMAaQIgTQCkCYA0AZA2fBdo//o1+hXwZyYAaQIgTQCkCYA0AZAmANIEQJoASBMAaQIgTQAsZT+HCyzujmJhPAAAAABJRU5ErkJggg==">
+  <title>Mine Mandarin</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js" async></script>
+</head>
+<body>
+  <!-- ========== PASSWORD GATE ========== -->
+  <div id="password-screen" style="display:none">
+    <div class="password-title">⛏️ MINE MANDARIN</div>
+    <div class="password-creeper" id="password-creeper"></div>
+    <div class="password-label">ENTER PASSWORD</div>
+    <input type="password" id="password-input" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <button class="mc-btn mc-btn-primary btn-enter" onclick="checkPassword()">ENTER</button>
+    <div id="wrong-message">Wrong password!</div>
+  </div>
+
+  <div class="app-container" id="app-container" style="display:none">
+
+    <!-- ========== TOP BAR (module screens) ========== -->
+    <div class="top-bar" id="top-bar">
+      <button class="btn-nav" id="top-bar-home" onclick="goHome()" style="display:none"></button>
+      <div class="top-bar-center">
+        <span id="session-tier-icon"></span>
+        <span id="top-bar-title" style="font-size:clamp(5px,1vw,9px)"></span>
+        <span id="session-xp" style="font-size:clamp(6px,1vw,9px);color:#7ECC19">+0</span>
+        <div class="session-xp-bar"><div class="session-xp-bar-fill" id="session-xp-bar"></div></div>
+      </div>
+      <div class="streak-counter">
+        <span id="session-streak-icon"></span>
+        <span id="session-streak">0</span>
+      </div>
+      <button class="btn-nav" id="top-bar-words" onclick="openWordListOverlay()" style="display:none"></button>
+    </div>
+
+    <!-- ========== HOME SCREEN ========== -->
+    <div class="screen active" id="home-screen">
+      <div class="home-topbar">
+        <span id="home-topbar-icon"></span>
+        <span id="home-topbar-xp" style="color:#7ECC19;font-size:clamp(7px,1.2vw,11px)">0</span>
+        <span style="font-size:clamp(5px,0.8vw,7px);color:var(--stone)">XP</span>
+        <span style="flex:1"></span>
+        <button class="btn-nav btn-nav-sm" onclick="openWordListOverlay()" id="home-words-btn"></button>
+      </div>
+
+      <div class="app-title">MINE MANDARIN</div>
+
+      <!-- Creeper SVG -->
+      <div class="creeper-container" id="creeper-home"></div>
+
+      <!-- Tier + XP Display -->
+      <div class="tier-display">
+        <span id="home-tier-icon"></span>
+        <div class="tier-info">
+          <div id="home-tier-name" class="tier-name">Wooden Sword</div>
+          <div id="home-xp-total" class="tier-xp">0 XP</div>
+        </div>
+      </div>
+
+      <!-- XP Progress Bar -->
+      <div class="xp-bar-container">
+        <div class="xp-bar"><div class="xp-bar-fill" id="xp-fill" style="width:0%"></div></div>
+        <div class="xp-bar-text" id="xp-text">0/50 to Stone Sword</div>
+      </div>
+
+      <!-- Mastery Bar -->
+      <div class="xp-bar-container">
+        <div class="xp-bar"><div class="mastery-bar-fill" id="mastery-fill" style="width:0%"></div></div>
+        <div class="xp-bar-text" id="mastery-text">0/52 mastered</div>
+      </div>
+
+      <!-- Study Mode Filter -->
+      <div style="width:100%;max-width:clamp(260px,50vw,500px);margin:0 auto;position:relative">
+        <button class="mc-btn mc-btn-secondary" onclick="openModeSelector()" style="width:100%;font-size:clamp(6px,1vw,10px)">
+          <span id="mode-label">All Words</span> ▼
+        </button>
+        <div id="mode-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:100;background:#2A2A2A;border:4px solid var(--stone)">
+          <div class="mode-grid" style="padding:8px">
+            <button class="mc-btn mc-btn-secondary" onclick="selectMode('all');openModeSelector()">All</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectMode('mastered');openModeSelector()">Mastered</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectMode('u3');openModeSelector()">Unit 3</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectMode('u5');openModeSelector()">Unit 5</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectMode('u3l1');openModeSelector()">U3 L1</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectMode('u3l2');openModeSelector()">U3 L2</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectMode('u3l3');openModeSelector()">U3 L3</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectMode('u5l1');openModeSelector()">U5 L1</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectMode('u5l2');openModeSelector()">U5 L2</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectMode('u5l3');openModeSelector()">U5 L3</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Module Tiles -->
+      <div class="module-grid" id="module-tiles"></div>
+    </div>
+
+    <!-- ========== ENCHANTMENT TABLE SCREEN ========== -->
+    <div class="screen" id="enchant-screen">
+      <div class="enchant-header">
+        <button class="btn-nav" onclick="goHome()" id="enchant-home-btn"></button>
+        <span class="enchant-title" id="enchant-title">Enchantment Table</span>
+        <span id="enchant-counter" style="font-size:clamp(6px,1vw,10px);color:var(--stone)">1/52</span>
+        <button class="btn-nav" onclick="openWordListOverlay()" id="enchant-words-btn"></button>
+      </div>
+      <div style="padding:0 clamp(8px,1.5vw,16px);position:relative">
+        <button class="mc-btn mc-btn-secondary" onclick="toggleEnchantFilter()" style="width:100%;font-size:clamp(5px,0.9vw,8px);min-height:clamp(32px,5vw,44px);padding:clamp(4px,0.8vw,10px)">
+          <span id="enchant-filter-label">All Words</span> ▼
+        </button>
+        <div id="enchant-filter-dropdown" style="display:none;position:absolute;top:100%;left:12px;right:12px;z-index:100;background:#2A2A2A;border:4px solid var(--stone)">
+          <div class="mode-grid" style="padding:6px">
+            <button class="mc-btn mc-btn-secondary" onclick="selectEnchantFilter('all')" style="font-size:clamp(4px,0.8vw,7px);min-height:clamp(28px,4vw,38px)">All</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectEnchantFilter('u3')" style="font-size:clamp(4px,0.8vw,7px);min-height:clamp(28px,4vw,38px)">Unit 3</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectEnchantFilter('u5')" style="font-size:clamp(4px,0.8vw,7px);min-height:clamp(28px,4vw,38px)">Unit 5</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectEnchantFilter('u3l1')" style="font-size:clamp(4px,0.8vw,7px);min-height:clamp(28px,4vw,38px)">U3L1</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectEnchantFilter('u3l2')" style="font-size:clamp(4px,0.8vw,7px);min-height:clamp(28px,4vw,38px)">U3L2</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectEnchantFilter('u3l3')" style="font-size:clamp(4px,0.8vw,7px);min-height:clamp(28px,4vw,38px)">U3L3</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectEnchantFilter('u5l1')" style="font-size:clamp(4px,0.8vw,7px);min-height:clamp(28px,4vw,38px)">U5L1</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectEnchantFilter('u5l2')" style="font-size:clamp(4px,0.8vw,7px);min-height:clamp(28px,4vw,38px)">U5L2</button>
+            <button class="mc-btn mc-btn-secondary" onclick="selectEnchantFilter('u5l3')" style="font-size:clamp(4px,0.8vw,7px);min-height:clamp(28px,4vw,38px)">U5L3</button>
+          </div>
+        </div>
+      </div>
+      <div class="enchant-card-area"><div class="enchant-card" id="enchant-card"></div></div>
+      <div class="enchant-nav">
+        <button class="mc-btn mc-btn-secondary" onclick="enchantPrev()" style="flex:1;min-height:clamp(40px,6vw,58px)">◀ PREV</button>
+        <button class="mc-btn mc-btn-secondary" onclick="enchantNext()" style="flex:1;min-height:clamp(40px,6vw,58px)">NEXT ▶</button>
+      </div>
+    </div>
+
+    <!-- ========== CARD SCREEN ========== -->
+    <div class="screen" id="card-screen">
+      <div class="card-progress" id="card-progress">1 / 10</div>
+      <div class="card-content" id="card-content"></div>
+    </div>
+
+    <!-- ========== SESSION COMPLETE ========== -->
+    <div class="screen" id="complete-screen">
+      <div class="complete-title">SESSION COMPLETE!</div>
+      <div class="complete-rank">
+        <span id="complete-tier-icon"></span>
+        <div id="complete-tier-name" class="complete-tier-label">WOODEN SWORD</div>
+      </div>
+      <div class="complete-stats">
+        <div class="stat-row"><span class="stat-label">XP Earned</span><span class="stat-value" id="complete-xp">+0 XP</span></div>
+        <div class="stat-row"><span class="stat-label">Correct</span><span class="stat-value" id="complete-correct">0 / 0</span></div>
+        <div class="stat-row"><span class="stat-label">New Masteries</span><span class="stat-value" id="complete-mastered">-</span></div>
+        <div class="stat-row"><span class="stat-label">Best Streak</span><span class="stat-value" id="complete-streak">0</span></div>
+      </div>
+      <div class="xp-bar-container" style="margin:clamp(4px,0.8vh,10px) auto">
+        <div class="xp-bar"><div class="mastery-bar-fill" id="complete-mastery-fill" style="width:0%;transition:width 1s ease"></div></div>
+        <div class="xp-bar-text" id="complete-mastery-text">0/52 mastered</div>
+      </div>
+      <button class="mc-btn mc-btn-primary" onclick="startModule(currentModule)" style="width:100%;max-width:300px;font-size:clamp(7px,1.3vw,12px)">PLAY AGAIN</button>
+      <button class="mc-btn mc-btn-gold" onclick="goHome()" style="width:100%;max-width:300px;font-size:clamp(8px,1.4vw,13px)">HOME</button>
+    </div>
+
+    <!-- ========== WORD LIST OVERLAY ========== -->
+    <div class="wordlist-overlay" id="wordlist-overlay" style="display:none">
+      <div class="wordlist-header">
+        <span style="font-size:clamp(8px,1.4vw,13px);color:var(--gold)">WORD LIST</span>
+        <button class="mc-btn mc-btn-danger wordlist-close" onclick="closeWordListOverlay()">CLOSE</button>
+      </div>
+      <div class="wordlist-filters" id="wordlist-filters"></div>
+      <div class="wordlist-items" id="wordlist-items"></div>
+    </div>
+
+  </div>
+
+  <script src="words.js?v=15"></script>
+  <script src="app.js?v=15"></script>
+  <script>
+    // Show/hide top bar nav buttons based on active screen
+    var navObserver = new MutationObserver(function() {
+      var home = document.getElementById('home-screen').classList.contains('active');
+      var enchant = document.getElementById('enchant-screen').classList.contains('active');
+      // Module top bar: show home+words on card/complete screens
+      var showModuleNav = !home && !enchant;
+      document.getElementById('top-bar-home').style.display = showModuleNav ? 'flex' : 'none';
+      document.getElementById('top-bar-words').style.display = showModuleNav ? 'flex' : 'none';
+    });
+    document.querySelectorAll('.screen').forEach(function(s) {
+      navObserver.observe(s, { attributes: true, attributeFilter: ['class'] });
+    });
+
+    // Populate nav buttons with MC icons
+    document.getElementById('top-bar-home').innerHTML = mcIcon('grass_block', 24);
+    document.getElementById('top-bar-words').innerHTML = mcIcon('book', 24);
+    document.getElementById('home-words-btn').innerHTML = mcIcon('book', 20);
+    document.getElementById('enchant-home-btn').innerHTML = mcIcon('grass_block', 20);
+    document.getElementById('enchant-words-btn').innerHTML = mcIcon('book', 20);
+
+    // Populate module tiles
+    document.getElementById('module-tiles').innerHTML =
+      '<button class="mc-btn mc-btn-primary" onclick="startModule(\'enchant\')">' +
+        '<span class="module-icon">' + mcIcon('book', 32) + '</span>' +
+        '<span class="module-name">Enchantment Table</span>' +
+        '<span class="module-sub">Study the words</span></button>' +
+      '<button class="mc-btn mc-btn-primary" onclick="startModule(\'readsay\')">' +
+        '<span class="module-icon">' + mcIcon('iron_sword', 32) + '</span>' +
+        '<span class="module-name">Read & Say</span>' +
+        '<span class="module-sub">See → Speak</span></button>' +
+      '<button class="mc-btn mc-btn-primary" onclick="startModule(\'sayit\')">' +
+        '<span class="module-icon">' + mcIcon('diamond_sword', 32) + '</span>' +
+        '<span class="module-name">Say It In Chinese</span>' +
+        '<span class="module-sub">English → Chinese</span></button>' +
+      '<button class="mc-btn mc-btn-primary" onclick="startModule(\'mine\')">' +
+        '<span class="module-icon">' + mcIcon('stone_sword', 32) + '</span>' +
+        '<span class="module-name">Mine The Word</span>' +
+        '<span class="module-sub">Hear → Write</span></button>';
+
+    // Populate creeper faces from JS constant
+    document.getElementById('password-creeper').innerHTML = CREEPER_SVG_STRING;
+    document.getElementById('creeper-home').innerHTML = '<div id="creeper" class="creeper-face-wrap">' + CREEPER_SVG_STRING + '</div>';
+
+    // Set enchant title with icon
+    document.getElementById('enchant-title').innerHTML = mcIcon('book', 16) + ' Enchantment Table';
+
+    // Streak icon
+    document.getElementById('session-streak-icon').innerHTML = mcIcon('blaze_powder', 16);
+
+    // Service worker registration — must be at end of body, on load
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(function(reg) {
+            console.log('[App] Service worker registered, scope:', reg.scope);
+          })
+          .catch(function(err) {
+            console.error('[App] Service worker registration failed:', err);
+          });
+      });
+      // Debug: log existing registrations
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        console.log('[App] SW registrations:', regs.length);
+      });
+    }
+  </script>
+</body>
+</html>

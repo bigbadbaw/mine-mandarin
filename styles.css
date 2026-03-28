@@ -1,0 +1,1547 @@
+/* Mine Mandarin — Minecraft Theme — Fluid Responsive */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* ============================================================
+   PASSWORD GATE
+   ============================================================ */
+#password-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background-color: #1A1A2E;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 31px, #111 31px, #111 32px),
+    repeating-linear-gradient(90deg, transparent, transparent 31px, #111 31px, #111 32px);
+  background-size: 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 3vh, 32px);
+  padding: 32px;
+}
+
+#password-screen.wrong-flash {
+  animation: pwWrongFlash 0.6s ease-out;
+}
+
+@keyframes pwWrongFlash {
+  0%, 100% { background-color: #1A1A2E; }
+  30%       { background-color: #4A0000; }
+}
+
+.password-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(12px, 2.5vw, 22px);
+  color: #FFD700;
+  text-shadow: 2px 2px 0 #000;
+  text-align: center;
+}
+
+.password-creeper {
+  width: clamp(80px, 18vw, 160px);
+  height: clamp(80px, 18vw, 160px);
+}
+
+.password-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(7px, 1.3vw, 11px);
+  color: #AAAAAA;
+  text-shadow: 1px 1px 0 #000;
+}
+
+#password-input {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(10px, 2vw, 16px);
+  background: #1A1A1A;
+  color: #FFD700;
+  border-top: 3px solid #373737;
+  border-left: 3px solid #373737;
+  border-bottom: 3px solid #DBDBDB;
+  border-right: 3px solid #DBDBDB;
+  padding: clamp(10px, 2vw, 18px) clamp(14px, 2.5vw, 24px);
+  width: min(320px, 80vw);
+  text-align: center;
+  outline: none;
+  caret-color: #FFD700;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+#password-input:focus {
+  border-color: #5DE8F0;
+}
+
+#wrong-message {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(6px, 1.1vw, 9px);
+  color: #CC3333;
+  text-shadow: 1px 1px 0 #000;
+  display: none;
+}
+
+.btn-enter {
+  width: min(220px, 60vw);
+  height: clamp(48px, 8vh, 68px);
+  font-size: clamp(8px, 1.5vw, 13px);
+}
+
+:root {
+  --grass: #5A9B3C; --grass-hi: #7DC95A; --grass-lo: #2E5A14;
+  --dirt: #86642A; --dirt-hi: #A47834; --dirt-lo: #4A3010;
+  --stone: #7A7A7A; --stone-hi: #AAAAAA; --stone-lo: #3C3C3C;
+  --diamond: #5DE8F0; --diamond-mid: #3BA8B0; --diamond-dk: #1A6B70;
+  --gold: #FFD700; --gold-lo: #CC9900;
+  --obsidian: #1A1A2E;
+  --creeper: #4CAF50; --creeper-dk: #388E3C;
+  --redstone: #CC3333; --redstone-dk: #8B1A1A;
+  --xp-green: #7ECC19; --xp-dark: #2D2D2D;
+  --cream: #FFF8E7;
+  --text-light: #E0E0E0; --text-dark: #1A1A2E;
+  --inv-bg: #8B8B8B; --inv-hi: #DBDBDB; --inv-lo: #373737;
+}
+
+html { font-size: clamp(12px, 1.8vw, 20px); }
+
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  font-family: 'Press Start 2P', monospace;
+  color: var(--text-light);
+  text-shadow: 1px 1px 0px #000;
+  background-color: #2A2A2A;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 31px, #1A1A1A 31px, #1A1A1A 32px),
+    repeating-linear-gradient(90deg, transparent, transparent 31px, #1A1A1A 31px, #1A1A1A 32px);
+  background-size: 32px 32px;
+}
+
+/* ============================================================
+   MC ICON — CDN textures
+   ============================================================ */
+.mc-icon {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  -webkit-image-rendering: pixelated;
+  vertical-align: middle;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   APP CONTAINER
+   ============================================================ */
+.app-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+.top-bar {
+  flex-shrink: 0;
+  height: clamp(44px, 6vh, 68px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(6px, 1.5vw, 16px);
+  gap: clamp(4px, 1vw, 12px);
+  overflow: hidden;
+  background-color: #1A1A1A;
+  border-bottom: 3px solid #555;
+  box-shadow: inset 1px 1px 0 #888, 0 3px 0 #000;
+  font-size: clamp(6px, 1vw, 10px);
+}
+
+.top-bar-back {
+  background: none;
+  border: 2px solid #555;
+  color: var(--text-light);
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(6px, 1vw, 10px);
+  padding: clamp(4px, 0.8vw, 8px) clamp(6px, 1vw, 12px);
+  cursor: pointer;
+  flex-shrink: 0;
+  min-height: clamp(28px, 5vw, 40px);
+}
+.top-bar-back:active { filter: brightness(0.7); }
+
+.top-bar-tier {
+  display: flex;
+  align-items: center;
+  gap: clamp(3px, 0.6vw, 6px);
+  flex: 1;
+  min-width: 0;
+}
+
+.top-bar-tier .mc-icon {
+  width: clamp(20px, 3.5vw, 32px) !important;
+  height: clamp(20px, 3.5vw, 32px) !important;
+}
+
+.session-xp-bar {
+  width: clamp(40px, 10vw, 120px);
+  height: clamp(4px, 0.8vh, 8px);
+  background: #1A1A1A;
+  border: 1px solid #555;
+  flex-shrink: 0;
+}
+.session-xp-bar-fill {
+  height: 100%;
+  background: var(--xp-green);
+  transition: width 0.3s;
+}
+
+.streak-counter {
+  display: flex;
+  align-items: center;
+  gap: clamp(3px, 0.6vw, 6px);
+  background-color: #3A3A3A;
+  border: 2px solid #555;
+  padding: clamp(2px, 0.5vw, 6px) clamp(4px, 1vw, 10px);
+  color: var(--gold);
+  font-size: clamp(6px, 1vw, 10px);
+  flex-shrink: 0;
+}
+
+.streak-counter .mc-icon {
+  width: clamp(14px, 2.5vw, 22px) !important;
+  height: clamp(14px, 2.5vw, 22px) !important;
+}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+.screen {
+  display: none;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  width: 100%;
+}
+.screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   HOME SCREEN
+   ============================================================ */
+#home-screen {
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(6px, 1.2vh, 16px) clamp(12px, 3vw, 32px);
+  gap: clamp(4px, 0.8vh, 12px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.home-topbar {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1vw, 10px);
+  justify-content: center;
+  flex-shrink: 0;
+}
+.home-topbar .mc-icon {
+  width: clamp(18px, 3vw, 28px) !important;
+  height: clamp(18px, 3vw, 28px) !important;
+}
+
+.app-title {
+  font-size: clamp(12px, 2.5vw, 24px);
+  color: var(--gold);
+  text-shadow: 2px 2px 0 var(--dirt), -1px -1px 0 #000;
+  text-align: center;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+/* --- CREEPER --- */
+.creeper-container {
+  flex-shrink: 0;
+  width: clamp(60px, 14vw, 140px);
+  height: clamp(60px, 14vw, 140px);
+  margin: 0 auto;
+}
+
+/* Old creeper-svg styles replaced by .creeper-face-wrap in attack section */
+
+/* --- TIER DISPLAY --- */
+.tier-display {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.5vw, 14px);
+  justify-content: center;
+  flex-shrink: 0;
+}
+.tier-display .mc-icon {
+  width: clamp(32px, 6vw, 56px) !important;
+  height: clamp(32px, 6vw, 56px) !important;
+}
+.tier-info { display: flex; flex-direction: column; gap: 2px; }
+.tier-name { font-size: clamp(7px, 1.3vw, 12px); color: var(--gold); }
+.tier-xp { font-size: clamp(6px, 1vw, 10px); color: var(--xp-green); }
+
+/* --- XP / MASTERY BARS --- */
+.xp-bar-container {
+  width: 100%;
+  max-width: clamp(260px, 50vw, 500px);
+  margin: 0 auto;
+  text-align: center;
+  flex-shrink: 0;
+}
+.xp-bar {
+  width: 100%;
+  height: clamp(10px, 1.5vh, 18px);
+  background: #1A1A1A;
+  border: 2px solid #000;
+  box-shadow: inset 1px 1px 0 #333;
+  overflow: hidden;
+}
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(to bottom, #7EFF00 0%, #5BB800 50%, #3D8000 100%);
+  transition: width 0.4s ease;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.3);
+}
+.mastery-bar-fill {
+  height: 100%;
+  background: linear-gradient(to bottom, #9B59B6 0%, #7D3C98 50%, #5B2C6F 100%);
+  transition: width 0.5s ease;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.3);
+}
+.xp-bar-text {
+  font-size: clamp(5px, 0.9vw, 9px);
+  margin-top: clamp(2px, 0.4vh, 6px);
+  color: var(--text-light);
+}
+
+/* --- MODULE GRID --- */
+.module-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(6px, 1.2vw, 14px);
+  width: 100%;
+  max-width: clamp(280px, 55vw, 600px);
+  margin: 0 auto;
+}
+
+/* --- BUTTONS (Minecraft block style) --- */
+.mc-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(7px, 1.2vw, 12px);
+  padding: clamp(8px, 1.5vw, 18px) clamp(10px, 1.8vw, 22px);
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  min-height: clamp(44px, 7vw, 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s;
+  line-height: 1.4;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.6);
+  position: relative;
+}
+.mc-btn:active { transform: translateY(2px); }
+
+.mc-btn-primary {
+  background-color: var(--grass); color: white;
+  box-shadow: inset 3px 3px 0px var(--grass-hi), inset -3px -3px 0px var(--grass-lo), 0 4px 0 #1A1A1A;
+}
+.mc-btn-primary:active { box-shadow: inset 3px 3px 0px var(--grass-lo), inset -3px -3px 0px var(--grass-hi), 0 1px 0 #1A1A1A; }
+
+.mc-btn-secondary {
+  background-color: var(--stone); color: white;
+  box-shadow: inset 3px 3px 0px var(--stone-hi), inset -3px -3px 0px var(--stone-lo), 0 4px 0 #1A1A1A;
+}
+.mc-btn-secondary:active { box-shadow: inset 3px 3px 0px var(--stone-lo), inset -3px -3px 0px var(--stone-hi), 0 1px 0 #1A1A1A; }
+
+.mc-btn-gold {
+  background-color: var(--gold); color: var(--text-dark); text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+  box-shadow: inset 3px 3px 0px #FFE44D, inset -3px -3px 0px #996600, 0 4px 0 #1A1A1A;
+}
+.mc-btn-gold:active { box-shadow: inset 3px 3px 0px #996600, inset -3px -3px 0px #FFE44D, 0 1px 0 #1A1A1A; }
+
+.mc-btn-danger {
+  background-color: var(--redstone-dk); color: white;
+  box-shadow: inset 3px 3px 0px var(--redstone), inset -3px -3px 0px #4A0000, 0 4px 0 #1A1A1A;
+}
+.mc-btn-danger:active { box-shadow: inset 3px 3px 0px #4A0000, inset -3px -3px 0px var(--redstone), 0 1px 0 #1A1A1A; }
+
+.mc-btn-diamond {
+  background-color: var(--diamond-dk); color: white;
+  box-shadow: inset 3px 3px 0px var(--diamond), inset -3px -3px 0px #0A3336, 0 4px 0 #1A1A1A;
+}
+.mc-btn-diamond:active { box-shadow: inset 3px 3px 0px #0A3336, inset -3px -3px 0px var(--diamond), 0 1px 0 #1A1A1A; }
+
+/* Module tiles — inventory slot */
+.module-grid .mc-btn {
+  flex-direction: column;
+  gap: clamp(3px, 0.6vh, 8px);
+  min-height: clamp(70px, 12vw, 120px);
+  background-color: var(--inv-bg);
+  box-shadow: none;
+  border-top: 4px solid var(--inv-hi);
+  border-left: 4px solid var(--inv-hi);
+  border-bottom: 4px solid var(--inv-lo);
+  border-right: 4px solid var(--inv-lo);
+  overflow: hidden;
+}
+.module-grid .mc-btn:active {
+  border-top-color: var(--inv-lo); border-left-color: var(--inv-lo);
+  border-bottom-color: var(--inv-hi); border-right-color: var(--inv-hi);
+  transform: none;
+}
+.module-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.module-icon .mc-icon {
+  width: clamp(24px, 5vw, 48px) !important;
+  height: clamp(24px, 5vw, 48px) !important;
+}
+.module-name { font-size: clamp(5px, 1vw, 9px); color: white; text-align: center; }
+.module-sub { font-size: clamp(4px, 0.8vw, 7px); color: rgba(255,255,255,0.5); text-align: center; }
+
+/* Study mode filter */
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(4px, 0.8vw, 10px);
+  width: 100%;
+  max-width: clamp(260px, 50vw, 500px);
+  margin: 0 auto;
+}
+.mode-grid .mc-btn {
+  font-size: clamp(6px, 1vw, 10px);
+  padding: clamp(6px, 1vw, 12px);
+  min-height: clamp(36px, 5vw, 52px);
+}
+
+/* ============================================================
+   CARD SCREEN (Read & Say / Say It / Mine)
+   ============================================================ */
+#card-screen {
+  align-items: center;
+  overflow: hidden;
+}
+
+.card-progress {
+  font-size: clamp(6px, 1vw, 10px);
+  color: var(--stone);
+  flex-shrink: 0;
+  padding: clamp(4px, 0.8vh, 10px);
+}
+
+.card-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1.2vh, 16px);
+  width: 100%;
+  max-width: min(600px, 90vw);
+  padding: clamp(8px, 1.5vw, 20px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.card-prompt {
+  font-size: clamp(8px, 1.4vw, 14px);
+  color: var(--gold);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* --- TYPOGRAPHY --- */
+.card-chinese {
+  font-size: clamp(48px, 10vw, 96px);
+  font-weight: 700;
+  color: white;
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+  font-family: system-ui, -apple-system, sans-serif;
+  text-align: center;
+  line-height: 1.2;
+  word-break: break-all;
+  flex-shrink: 0;
+}
+.card-chinese.small { font-size: clamp(32px, 7vw, 64px); }
+
+.card-pinyin {
+  font-size: clamp(16px, 3.2vw, 32px);
+  color: var(--diamond);
+  font-family: system-ui, -apple-system, sans-serif;
+  text-align: center;
+}
+
+.card-english {
+  font-size: clamp(10px, 1.8vw, 18px);
+  color: var(--gold);
+  text-align: center;
+  font-family: 'Press Start 2P', monospace;
+  line-height: 1.6;
+}
+
+.card-reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 0.8vh, 10px);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.card-reveal.visible { opacity: 1; }
+
+/* --- MIC BUTTON --- */
+.mic-btn {
+  width: clamp(80px, 14vw, 130px);
+  height: clamp(80px, 14vw, 130px);
+  border: none;
+  border-top: 4px solid var(--inv-hi);
+  border-left: 4px solid var(--inv-hi);
+  border-bottom: 4px solid var(--inv-lo);
+  border-right: 4px solid var(--inv-lo);
+  background: var(--inv-bg);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4px, 0.8vh, 10px);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: clamp(4px, 0.8vh, 10px) auto;
+  flex-shrink: 0;
+}
+.mic-btn:active {
+  border-top-color: var(--inv-lo); border-left-color: var(--inv-lo);
+  border-bottom-color: var(--inv-hi); border-right-color: var(--inv-hi);
+}
+.mic-icon { display: flex; align-items: center; justify-content: center; }
+.mic-icon .mc-icon {
+  width: clamp(28px, 5vw, 48px) !important;
+  height: clamp(28px, 5vw, 48px) !important;
+}
+.mic-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(5px, 0.9vw, 8px);
+  color: var(--creeper);
+}
+
+.mic-btn.listening {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: var(--xp-green);
+  animation: mic-pulse 1s ease-in-out infinite;
+}
+.mic-btn.listening .mic-label { color: var(--xp-green); }
+@keyframes mic-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0.4); } 50% { box-shadow: 0 0 0 16px rgba(76,175,80,0); } }
+
+.mic-btn.no-speech {
+  background: rgba(255,215,0,0.15);
+  border-color: var(--gold);
+  animation: no-speech-flash 0.4s ease-in-out 2;
+}
+.mic-btn.no-speech .mic-label { color: var(--gold); font-size: clamp(4px, 0.7vw, 6px); }
+@keyframes no-speech-flash { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0.3); } 50% { box-shadow: 0 0 12px 4px rgba(255,215,0,0.2); } }
+
+.mic-unavailable {
+  font-size: clamp(6px, 1.1vw, 10px);
+  color: var(--stone);
+  text-align: center;
+  padding: clamp(6px, 1vw, 14px);
+  border: 3px dashed var(--stone);
+}
+
+.speech-result {
+  font-size: clamp(7px, 1.3vw, 12px);
+  text-align: center;
+  line-height: 1.6;
+  padding: clamp(2px, 0.4vh, 6px);
+}
+.speech-result.perfect { color: var(--xp-green); }
+.speech-result.wrong { color: var(--redstone); }
+.speech-result span[lang] {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(16px, 3vw, 24px);
+  font-weight: 700;
+}
+
+/* --- TTS BUTTON --- */
+.tts-btn {
+  width: clamp(44px, 7vw, 64px);
+  height: clamp(44px, 7vw, 64px);
+  border: none;
+  border-top: 3px solid var(--inv-hi);
+  border-left: 3px solid var(--inv-hi);
+  border-bottom: 3px solid var(--inv-lo);
+  border-right: 3px solid var(--inv-lo);
+  background: var(--inv-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.tts-btn .mc-icon {
+  width: clamp(18px, 3vw, 28px) !important;
+  height: clamp(18px, 3vw, 28px) !important;
+}
+.tts-btn:active {
+  border-top-color: var(--inv-lo); border-left-color: var(--inv-lo);
+  border-bottom-color: var(--inv-hi); border-right-color: var(--inv-hi);
+}
+.tts-btn.speaking {
+  background: var(--diamond-dk);
+  animation: tts-pulse 0.5s ease infinite alternate;
+}
+@keyframes tts-pulse { from { transform: scale(1); } to { transform: scale(1.06); } }
+
+.tts-btn-large {
+  width: auto;
+  height: auto;
+  padding: clamp(10px, 2vw, 24px) clamp(20px, 4vw, 40px);
+  margin: clamp(4px, 0.8vh, 10px) auto;
+}
+.tts-btn-large .mc-icon {
+  width: clamp(24px, 4.5vw, 40px) !important;
+  height: clamp(24px, 4.5vw, 40px) !important;
+}
+
+/* --- ACTION BUTTONS --- */
+.action-row {
+  display: flex;
+  gap: clamp(6px, 1.2vw, 14px);
+  width: 100%;
+  max-width: min(400px, 90vw);
+  flex-shrink: 0;
+}
+.action-row .mc-btn {
+  flex: 1;
+  min-height: clamp(44px, 7vw, 64px);
+  font-size: clamp(6px, 1.1vw, 11px);
+}
+.action-row .mc-icon {
+  width: clamp(14px, 2.2vw, 20px) !important;
+  height: clamp(14px, 2.2vw, 20px) !important;
+}
+
+/* --- REVEAL BUTTON --- */
+.reveal-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(7px, 1.2vw, 12px);
+  padding: clamp(8px, 1.5vw, 16px) clamp(16px, 3vw, 32px);
+  border: none;
+  background-color: var(--dirt); color: white;
+  cursor: pointer;
+  min-height: clamp(40px, 6vw, 56px);
+  box-shadow: inset 3px 3px 0px var(--dirt-hi), inset -3px -3px 0px var(--dirt-lo), 0 4px 0 #1A1A1A;
+  flex-shrink: 0;
+}
+.reveal-btn:active { transform: translateY(2px); box-shadow: inset 3px 3px 0px var(--dirt-lo), inset -3px -3px 0px var(--dirt-hi), 0 1px 0 #1A1A1A; }
+
+/* --- HINT TOGGLE --- */
+.hint-toggle {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(5px, 0.9vw, 9px);
+  padding: clamp(4px, 0.8vw, 10px) clamp(8px, 1.5vw, 16px);
+  border: none;
+  background: var(--stone); color: var(--text-light); cursor: pointer;
+  box-shadow: inset 2px 2px 0px var(--stone-hi), inset -2px -2px 0px var(--stone-lo), 0 3px 0 #1A1A1A;
+}
+.hint-toggle.on {
+  background: var(--diamond-dk); color: white;
+  box-shadow: inset 2px 2px 0px var(--diamond), inset -2px -2px 0px #0A3336, 0 3px 0 #1A1A1A;
+}
+
+/* ============================================================
+   ENCHANTMENT TABLE
+   ============================================================ */
+.enchant-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(4px, 0.8vh, 10px) clamp(8px, 1.5vw, 16px);
+  background: #1A1A1A;
+  border-bottom: 3px solid var(--dirt);
+  box-shadow: 0 3px 0 #000;
+  flex-shrink: 0;
+}
+.enchant-title {
+  font-size: clamp(7px, 1.2vw, 12px);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 0.8vw, 8px);
+}
+
+.enchant-card-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(8px, 1.5vw, 16px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.enchant-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, 1vh, 12px);
+  width: 100%;
+  max-width: min(100%, 500px);
+  padding: clamp(10px, 2vw, 20px);
+  background-color: #3A2A1A;
+  background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 8px);
+  border-top: 4px solid #5A4020;
+  border-left: 4px solid #5A4020;
+  border-bottom: 4px solid #1A0A00;
+  border-right: 4px solid #1A0A00;
+}
+
+.enchant-unit {
+  font-size: clamp(5px, 0.9vw, 8px);
+  color: var(--stone);
+  background: rgba(0,0,0,0.3);
+  padding: clamp(2px, 0.4vw, 6px) clamp(6px, 1vw, 12px);
+  border: 2px solid rgba(255,255,255,0.1);
+}
+
+.enchant-nav {
+  display: flex;
+  gap: clamp(6px, 1.2vw, 12px);
+  padding: clamp(4px, 0.8vh, 10px) clamp(10px, 2vw, 20px);
+  flex-shrink: 0;
+}
+.enchant-nav .mc-btn {
+  flex: 1;
+  min-height: clamp(40px, 6vw, 58px);
+  font-size: clamp(7px, 1.2vw, 12px);
+}
+
+/* --- HANZIWRITER --- */
+.hw-section {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border-top: 3px solid #5A4020;
+  border-left: 3px solid #5A4020;
+  border-bottom: 3px solid #1A0A00;
+  border-right: 3px solid #1A0A00;
+  padding: clamp(6px, 1vw, 12px);
+  margin-top: clamp(4px, 0.6vh, 8px);
+  overflow: hidden;
+}
+.hw-section-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(5px, 0.9vw, 9px);
+  color: var(--diamond);
+  margin-bottom: clamp(4px, 0.8vh, 10px);
+  display: flex;
+  align-items: center;
+  gap: clamp(3px, 0.6vw, 6px);
+}
+.hw-chars-row {
+  display: flex;
+  justify-content: center;
+  gap: clamp(6px, 1.2vw, 12px);
+  flex-wrap: wrap;
+}
+.hw-char-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2px, 0.4vh, 6px);
+}
+.hw-char-target {
+  border: 3px solid var(--dirt);
+  background: rgba(0,0,0,0.3);
+  touch-action: none;
+  transition: box-shadow 0.3s;
+}
+.hw-char-target svg { display: block; }
+.hw-char-label {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(10px, 1.8vw, 16px);
+  color: var(--stone);
+  text-shadow: none;
+}
+.hw-char-btns {
+  display: flex;
+  gap: clamp(2px, 0.5vw, 6px);
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.hw-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(4px, 0.7vw, 7px);
+  padding: clamp(3px, 0.6vw, 7px) clamp(5px, 0.9vw, 10px);
+  border: none;
+  background: var(--stone); color: white; cursor: pointer;
+  min-height: clamp(22px, 3.5vw, 32px);
+  box-shadow: inset 2px 2px 0px var(--stone-hi), inset -2px -2px 0px var(--stone-lo), 0 2px 0 #1A1A1A;
+}
+.hw-btn:active { transform: translateY(2px); box-shadow: inset 2px 2px 0px var(--stone-lo), inset -2px -2px 0px var(--stone-hi), 0 0 0 #1A1A1A; }
+.hw-btn-practice {
+  background: var(--creeper);
+  box-shadow: inset 2px 2px 0px var(--grass-hi), inset -2px -2px 0px var(--grass-lo), 0 2px 0 #1A1A1A;
+}
+.hw-done { font-size: clamp(14px, 2.5vw, 22px); font-family: system-ui; text-shadow: none; }
+
+/* ============================================================
+   MINE THE WORD
+   ============================================================ */
+.mine-choice {
+  display: flex;
+  gap: clamp(6px, 1.2vw, 12px);
+  width: 100%;
+  max-width: min(400px, 90vw);
+  flex-shrink: 0;
+}
+
+.mine-verify-row {
+  display: flex;
+  gap: clamp(10px, 2vw, 20px);
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6px, 1.2vw, 14px);
+}
+.mine-verify-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* --- CANVAS --- */
+.draw-canvas-wrap {
+  width: min(300px, calc(100vw - 48px), calc(100vh - 340px));
+  height: min(300px, calc(100vw - 48px), calc(100vh - 340px));
+  border-top: 4px solid var(--inv-hi);
+  border-left: 4px solid var(--inv-hi);
+  border-bottom: 4px solid var(--inv-lo);
+  border-right: 4px solid var(--inv-lo);
+  background: var(--cream);
+  touch-action: none;
+  flex-shrink: 0;
+}
+.draw-canvas-wrap canvas { width: 100%; height: 100%; display: block; }
+.canvas-controls {
+  display: flex;
+  gap: clamp(4px, 0.8vw, 10px);
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   SESSION COMPLETE
+   ============================================================ */
+#complete-screen {
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 2.5vw, 32px);
+  gap: clamp(6px, 1.2vh, 16px);
+  text-align: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.complete-title {
+  font-size: clamp(12px, 2.5vw, 22px);
+  color: var(--gold);
+  text-shadow: 2px 2px 0 var(--dirt);
+  flex-shrink: 0;
+}
+
+.complete-rank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 0.8vh, 10px);
+  flex-shrink: 0;
+}
+.complete-rank .mc-icon {
+  width: clamp(48px, 10vw, 80px) !important;
+  height: clamp(48px, 10vw, 80px) !important;
+}
+.complete-tier-label {
+  font-size: clamp(8px, 1.5vw, 14px);
+  color: var(--gold);
+}
+
+.complete-stats {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.2vh, 14px);
+  font-size: clamp(7px, 1.3vw, 12px);
+  background: var(--inv-bg);
+  border-top: 4px solid var(--inv-hi);
+  border-left: 4px solid var(--inv-hi);
+  border-bottom: 4px solid var(--inv-lo);
+  border-right: 4px solid var(--inv-lo);
+  padding: clamp(10px, 2vw, 20px);
+  width: 100%;
+  max-width: min(500px, 90vw);
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: clamp(8px, 1.5vw, 20px);
+}
+.stat-label { color: #555; text-shadow: none; }
+.stat-value { color: var(--diamond); display: flex; align-items: center; gap: clamp(3px, 0.6vw, 6px); }
+
+/* ============================================================
+   EFFECTS
+   ============================================================ */
+.diamond-float {
+  position: fixed;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(10px, 2vw, 18px);
+  color: var(--diamond);
+  pointer-events: none;
+  z-index: 1000;
+  animation: float-up 1s ease-out forwards;
+}
+@keyframes float-up { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-60px) scale(1.2); } }
+
+.block-break {
+  position: fixed;
+  width: clamp(6px, 1vw, 10px);
+  height: clamp(6px, 1vw, 10px);
+  pointer-events: none;
+  z-index: 999;
+  border-radius: 0;
+  animation: block-burst 0.6s ease-out forwards;
+}
+@keyframes block-burst { 0% { opacity: 1; transform: translate(0,0) scale(1); } 100% { opacity: 0; transform: translate(var(--bx),var(--by)) scale(0.3); } }
+
+.confetti-piece {
+  position: fixed;
+  width: clamp(5px, 1vw, 10px);
+  height: clamp(5px, 1vw, 10px);
+  border-radius: 0;
+  pointer-events: none;
+  z-index: 1000;
+  animation: confetti-fall 2s ease-out forwards;
+}
+@keyframes confetti-fall { 0% { opacity: 1; transform: translateY(0) rotate(0deg); } 100% { opacity: 0; transform: translateY(100vh) rotate(720deg); } }
+
+.wrong-flash { animation: red-flash 0.3s ease; }
+@keyframes red-flash { 0%, 100% { background-color: transparent; } 50% { background-color: rgba(255,0,0,0.15); } }
+
+.streak-banner {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: clamp(10px, 2vw, 18px);
+  color: var(--gold);
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.6);
+  z-index: 1001;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: streak-pop 1.2s ease forwards;
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 0.8vw, 10px);
+}
+@keyframes streak-pop {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  20% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+}
+
+.diamond-rain {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+  animation: diamond-fall 3s linear forwards;
+}
+@keyframes diamond-fall { 0% { opacity: 1; transform: translateY(-30px) rotate(0deg); } 100% { opacity: 0; transform: translateY(100vh) rotate(360deg); } }
+
+/* ============================================================
+   ACHIEVEMENT TOAST
+   ============================================================ */
+.achievement-toast {
+  position: fixed;
+  top: max(60px, calc(env(safe-area-inset-top) + 50px));
+  right: -400px;
+  background: #1A1A1A;
+  border: 3px solid var(--gold);
+  box-shadow: inset 2px 2px 0 #555, 0 4px 0 #000;
+  padding: clamp(6px, 1.2vw, 14px) clamp(10px, 1.8vw, 18px);
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1vw, 12px);
+  font-family: 'Press Start 2P', monospace;
+  z-index: 9999;
+  transition: right 0.3s ease;
+  max-width: min(280px, 70vw);
+}
+.achievement-toast.show { right: 12px; }
+.achievement-title {
+  font-size: clamp(4px, 0.7vw, 7px);
+  color: #AAAAAA;
+  display: block;
+  margin-bottom: 3px;
+}
+.achievement-name {
+  font-size: clamp(5px, 0.9vw, 9px);
+  color: var(--gold);
+  display: block;
+}
+.achievement-toast .mc-icon {
+  width: clamp(24px, 4vw, 36px) !important;
+  height: clamp(24px, 4vw, 36px) !important;
+}
+
+/* Sword drop animation */
+.sword-drop {
+  position: fixed;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9998;
+  pointer-events: none;
+  animation: sword-fall 1.5s ease forwards;
+}
+@keyframes sword-fall {
+  0% { top: -80px; transform: translateX(-50%) rotate(0deg); }
+  60% { top: 40%; transform: translateX(-50%) rotate(360deg); }
+  70% { top: 38%; transform: translateX(-50%) rotate(360deg) scale(1.1); }
+  80% { top: 42%; transform: translateX(-50%) rotate(360deg) scale(0.95); }
+  100% { top: 40%; transform: translateX(-50%) rotate(360deg) scale(1); opacity: 0; }
+}
+@keyframes shimmer { 0% { opacity: 0; transform: translateX(-100%); } 50% { opacity: 1; } 100% { opacity: 0; transform: translateX(100%); } }
+
+/* ============================================================
+   TTS WARNING
+   ============================================================ */
+.tts-warning {
+  position: fixed;
+  top: clamp(40px, 7vh, 60px);
+  left: clamp(8px, 2vw, 16px);
+  right: clamp(8px, 2vw, 16px);
+  background: var(--gold); color: var(--text-dark);
+  font-size: clamp(5px, 0.9vw, 9px);
+  padding: clamp(6px, 1.2vw, 14px);
+  border: 4px solid #CC9900;
+  z-index: 2000;
+  text-align: center;
+  line-height: 1.6;
+  text-shadow: none;
+}
+.tts-warning-close {
+  display: inline-block;
+  margin-top: clamp(4px, 0.8vh, 10px);
+  padding: clamp(3px, 0.6vw, 8px) clamp(8px, 1.5vw, 14px);
+  background: var(--obsidian); color: white;
+  border: 2px solid #555;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(5px, 0.9vw, 9px);
+  cursor: pointer;
+}
+
+/* ============================================================
+   WORD LIST
+   ============================================================ */
+.word-list-container {
+  width: 100%;
+  max-width: min(500px, 90vw);
+  margin: 0 auto;
+}
+.word-list-item {
+  display: flex;
+  align-items: center;
+  padding: clamp(6px, 1.2vw, 14px) clamp(8px, 1.5vw, 16px);
+  border-bottom: 2px solid rgba(255,255,255,0.1);
+  gap: clamp(6px, 1.2vw, 12px);
+  font-size: clamp(6px, 1.1vw, 10px);
+}
+.word-list-status {
+  width: clamp(24px, 4vw, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.word-list-chinese {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(16px, 3vw, 24px);
+  font-weight: 700;
+  color: white;
+  min-width: clamp(40px, 8vw, 70px);
+}
+.word-list-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.word-list-pinyin {
+  font-family: system-ui;
+  font-size: clamp(8px, 1.5vw, 14px);
+  color: var(--diamond);
+  text-shadow: none;
+}
+.word-list-english { font-size: clamp(5px, 0.9vw, 9px); color: var(--stone); }
+
+.word-mastered-icon {
+  display: inline-flex;
+  filter: drop-shadow(0 0 4px #9B59B6) drop-shadow(0 0 8px #9B59B6);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #1A1A1A; }
+::-webkit-scrollbar-thumb { background: var(--stone); border: 1px solid #1A1A1A; }
+
+/* ============================================================
+   PINYIN INPUT (if still used)
+   ============================================================ */
+.pinyin-input {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(18px, 3.5vw, 30px);
+  padding: clamp(8px, 1.5vw, 16px) clamp(12px, 2.5vw, 24px);
+  border-top: 4px solid var(--inv-lo);
+  border-left: 4px solid var(--inv-lo);
+  border-bottom: 4px solid var(--inv-hi);
+  border-right: 4px solid var(--inv-hi);
+  background: var(--cream);
+  color: var(--text-dark);
+  text-align: center;
+  width: 100%;
+  max-width: min(300px, 80vw);
+  outline: none;
+  text-shadow: none;
+}
+.pinyin-input:focus {
+  border-color: var(--diamond);
+  box-shadow: 0 0 0 4px rgba(93,232,240,0.3);
+}
+.pinyin-result {
+  font-size: clamp(8px, 1.3vw, 13px);
+  text-align: center;
+  line-height: 1.6;
+}
+.pinyin-result.perfect { color: var(--xp-green); }
+.pinyin-result.close { color: var(--gold); }
+.pinyin-result.wrong { color: var(--redstone); }
+
+/* ============================================================
+   NAV BUTTONS — Home + Word List
+   ============================================================ */
+.btn-nav {
+  width: clamp(36px, 6vw, 52px);
+  height: clamp(36px, 6vw, 52px);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 2px solid #555;
+  cursor: pointer;
+  padding: clamp(2px, 0.4vw, 6px);
+}
+.btn-nav:active { filter: brightness(0.7); }
+.btn-nav .mc-icon {
+  width: clamp(20px, 3.5vw, 30px) !important;
+  height: clamp(20px, 3.5vw, 30px) !important;
+}
+
+.btn-nav-sm {
+  width: clamp(28px, 5vw, 40px);
+  height: clamp(28px, 5vw, 40px);
+}
+.btn-nav-sm .mc-icon {
+  width: clamp(16px, 3vw, 24px) !important;
+  height: clamp(16px, 3vw, 24px) !important;
+}
+
+.top-bar-center {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(3px, 0.6vw, 8px);
+  overflow: hidden;
+}
+
+/* ============================================================
+   WORD LIST OVERLAY
+   ============================================================ */
+.wordlist-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.94);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.wordlist-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(8px, 1.5vw, 16px) clamp(12px, 2vw, 24px);
+  border-bottom: 3px solid #555;
+}
+
+.wordlist-close {
+  font-size: clamp(5px, 0.9vw, 9px) !important;
+  padding: clamp(4px, 0.8vw, 10px) clamp(8px, 1.5vw, 16px) !important;
+  min-height: clamp(32px, 5vw, 44px) !important;
+}
+
+.wordlist-filters {
+  flex-shrink: 0;
+  display: flex;
+  gap: clamp(4px, 0.8vw, 8px);
+  padding: clamp(6px, 1vw, 12px) clamp(8px, 1.5vw, 16px);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.wordlist-filters::-webkit-scrollbar { display: none; }
+
+.wl-filter-btn {
+  flex-shrink: 0;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(4px, 0.7vw, 7px);
+  padding: clamp(4px, 0.8vw, 8px) clamp(6px, 1.2vw, 14px);
+  border: 2px solid #555;
+  background: #3A3A3A;
+  color: var(--text-light);
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: clamp(28px, 4.5vw, 38px);
+}
+.wl-filter-btn:active { filter: brightness(0.7); }
+.wl-filter-btn.wl-filter-active {
+  background: var(--diamond-dk);
+  border-color: var(--diamond);
+  color: white;
+}
+
+.wordlist-items {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 clamp(8px, 1.5vw, 20px) clamp(8px, 1.5vh, 20px);
+}
+
+.wordlist-item {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.2vw, 14px);
+  padding: clamp(6px, 1vh, 12px) 0;
+  border-bottom: 2px solid #333;
+}
+
+.wordlist-item .mastery-icon {
+  width: clamp(20px, 3vw, 28px);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wordlist-item .word-chinese {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(18px, 3.2vw, 28px);
+  font-weight: 700;
+  color: white;
+  min-width: clamp(50px, 8vw, 80px);
+  text-shadow: 2px 2px 0 #000;
+}
+
+.wordlist-item .word-pinyin {
+  font-family: system-ui;
+  font-size: clamp(9px, 1.6vw, 14px);
+  color: var(--diamond);
+  flex: 1;
+  text-shadow: none;
+}
+
+.wordlist-item .word-english {
+  font-size: clamp(6px, 1.1vw, 10px);
+  color: #AAAAAA;
+  flex: 1;
+  text-align: right;
+}
+
+/* ============================================================
+   CREEPER FACE & EMOTION STATES
+   ============================================================ */
+.creeper-face-wrap {
+  width: 100%;
+  height: 100%;
+  transition: filter 0.3s, transform 0.3s;
+}
+
+.creeper-face-wrap svg { display: block; }
+
+/* Idle: gentle bob */
+.creeper-container .creeper-face-wrap {
+  animation: creeperBob 2.5s ease-in-out infinite;
+}
+@keyframes creeperBob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
+}
+
+/* Happy */
+.creeper-happy { filter: brightness(1.15) saturate(1.2); }
+.creeper-bounce { animation: creeperBounceAnim 0.5s ease-in-out; }
+@keyframes creeperBounceAnim {
+  0%, 100% { transform: scale(1) translateY(0); }
+  40%       { transform: scale(1.12) translateY(-10px); }
+  70%       { transform: scale(0.95) translateY(2px); }
+}
+
+/* Sad */
+.creeper-sad { filter: hue-rotate(180deg) brightness(0.7); }
+.creeper-shake { animation: creeperShakeAnim 0.4s ease-in-out; }
+@keyframes creeperShakeAnim {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-6px); }
+  75%       { transform: translateX(6px); }
+}
+
+/* Glow (streak 3) */
+.creeper-glow { filter: brightness(1.3) drop-shadow(0 0 12px rgba(255, 153, 0, 0.7)); }
+
+/* Flash (streak 5) */
+.creeper-flash { animation: creeperFlashAnim 0.15s steps(1) infinite; }
+@keyframes creeperFlashAnim {
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(10) saturate(0); }
+  100% { filter: brightness(1); }
+}
+
+/* Spin (streak 10+) */
+.creeper-spin { animation: creeperSpinAnim 0.6s ease-in-out; }
+@keyframes creeperSpinAnim {
+  from { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.15); }
+  to   { transform: rotate(360deg) scale(1); }
+}
+
+/* ============================================================
+   CREEPER ATTACK ANIMATION
+   ============================================================ */
+#creeper-attack-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2.5vh, 28px);
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+#attack-creeper-wrap {
+  width: clamp(120px, 28vw, 220px);
+  height: clamp(120px, 28vw, 220px);
+  transform: translateX(150vw);
+  flex-shrink: 0;
+  transition: none;
+}
+
+.creeper-face-svg { width: 100%; height: 100%; }
+.creeper-face-svg svg { display: block; width: 100%; height: 100%; }
+
+.attack-text {
+  font-family: 'Press Start 2P', monospace;
+  text-align: center;
+  text-shadow: 2px 2px 0 #000, 0 0 20px currentColor;
+  line-height: 1.8;
+  transition: opacity 0.2s ease;
+}
+
+#attack-text-sss {
+  font-size: clamp(16px, 3.5vw, 28px);
+  color: #4CAF50;
+}
+
+.attack-boom-text {
+  font-size: clamp(28px, 7vw, 56px);
+  color: #FF6600;
+  text-shadow: 3px 3px 0 #000, 0 0 40px #FFD700 !important;
+}
+
+.attack-msg-text {
+  font-size: clamp(9px, 2vw, 16px);
+  color: #FFD700;
+}
+
+@keyframes sssGlow {
+  from { color: #4CAF50; text-shadow: 2px 2px 0 #000; }
+  to   { color: #7FFF00; text-shadow: 2px 2px 0 #000, 0 0 16px #4CAF50; }
+}
+
+@keyframes boomPop {
+  0%   { transform: scale(0.3) rotate(-5deg); opacity: 1; }
+  50%  { transform: scale(1.3) rotate(3deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes msgSlideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes creeperWave {
+  0%, 100% { transform: translate(-35vw, -30vh) rotate(0deg); }
+  25%       { transform: translate(-35vw, -30vh) rotate(-15deg); }
+  75%       { transform: translate(-35vw, -30vh) rotate(15deg); }
+}
+
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  15%       { transform: translate(-8px, 5px) rotate(-0.5deg); }
+  30%       { transform: translate(8px, -5px) rotate(0.5deg); }
+  45%       { transform: translate(-6px, 6px) rotate(-0.3deg); }
+  60%       { transform: translate(6px, -3px) rotate(0.3deg); }
+  75%       { transform: translate(-4px, 4px) rotate(-0.2deg); }
+  90%       { transform: translate(3px, -2px) rotate(0.1deg); }
+}
+
+body.screen-shake {
+  animation: screenShake 0.55s ease-in-out;
+}
+
+.red-flash-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(180, 0, 0, 0.5);
+  z-index: 9400;
+  pointer-events: none;
+  animation: redFadeOut 0.5s ease-out forwards;
+}
+
+@keyframes redFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ============================================================
+   MINE THE WORD — COUNTDOWN BAR & CONFIRM OVERLAY
+   ============================================================ */
+.countdown-bar-container {
+  width: 100%;
+  max-width: 300px;
+  height: 12px;
+  background: #1A1A1A;
+  border: 3px solid #555;
+  margin: 4px auto;
+}
+
+.countdown-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #CC3333, #FFD700);
+  transition: width 1s linear;
+}
+
+.pulse-ready {
+  animation: pulseReady 0.6s ease-in-out 3;
+}
+
+@keyframes pulseReady {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.05); box-shadow: 0 0 12px rgba(93, 232, 240, 0.5); }
+}
+
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.confirm-card {
+  background: #3A3A3A;
+  border-top: 4px solid #DBDBDB;
+  border-left: 4px solid #DBDBDB;
+  border-bottom: 4px solid #373737;
+  border-right: 4px solid #373737;
+  padding: clamp(20px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 2vh, 24px);
+  max-width: 500px;
+  width: 100%;
+}
+
+.confirm-char {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(56px, 12vw, 96px);
+  font-weight: 700;
+  color: white;
+}
+
+.confirm-pinyin {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(16px, 3vw, 28px);
+  color: var(--diamond);
+}
+
+.confirm-question {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(7px, 1.3vw, 11px);
+  color: #FFD700;
+  text-shadow: 1px 1px 0 #000;
+  text-align: center;
+  margin: 0;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: clamp(10px, 2vw, 20px);
+  width: 100%;
+}
+
+.confirm-buttons .confirm-btn {
+  flex: 1;
+  height: clamp(52px, 9vh, 72px);
+  font-size: clamp(5px, 0.9vw, 9px) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}

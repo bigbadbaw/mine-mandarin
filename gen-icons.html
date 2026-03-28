@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html><head><title>Generate Icons</title></head>
+<body>
+<h2>Right-click each image → Save As</h2>
+<p>Save as <code>icon-192.png</code> and <code>icon-512.png</code> in the dragon-words folder.</p>
+<div id="output"></div>
+<script>
+function generateCreeperIcon(size) {
+  var canvas = document.createElement('canvas');
+  canvas.width = size; canvas.height = size;
+  var ctx = canvas.getContext('2d');
+  var u = size / 16;
+
+  ctx.fillStyle = '#2D5A1B';
+  ctx.fillRect(0, 0, size, size);
+
+  ctx.fillStyle = '#4CAF50';
+  ctx.fillRect(u*2, u*2, u*12, u*12);
+
+  ctx.fillStyle = '#1A1A1A';
+  ctx.fillRect(u*3, u*4, u*3, u*3);
+  ctx.fillRect(u*10, u*4, u*3, u*3);
+  ctx.fillRect(u*6, u*8, u*4, u*1);
+  ctx.fillRect(u*5, u*9, u*2, u*2);
+  ctx.fillRect(u*9, u*9, u*2, u*2);
+  ctx.fillRect(u*6, u*11, u*4, u*1);
+
+  ctx.fillStyle = '#4CAF50';
+  ctx.fillRect(u*6, u*9, u*1, u*2);
+  ctx.fillRect(u*9, u*9, u*1, u*2);
+
+  ctx.fillStyle = '#388E3C';
+  ctx.fillRect(0, 0, size, u*2);
+  ctx.fillRect(0, 0, u*2, size);
+  ctx.fillStyle = '#1B5E20';
+  ctx.fillRect(0, size-u*2, size, u*2);
+  ctx.fillRect(size-u*2, 0, u*2, size);
+
+  return canvas;
+}
+
+[192, 512].forEach(function(size) {
+  var canvas = generateCreeperIcon(size);
+  canvas.style.cssText = 'border:2px solid #333;margin:10px;image-rendering:pixelated';
+  var label = document.createElement('p');
+  label.textContent = 'icon-' + size + '.png (' + size + 'x' + size + ')';
+  document.getElementById('output').appendChild(label);
+  document.getElementById('output').appendChild(canvas);
+
+  // Also auto-download
+  var link = document.createElement('a');
+  link.download = 'icon-' + size + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.textContent = 'Download icon-' + size + '.png';
+  link.style.cssText = 'display:block;margin:5px 10px;color:blue';
+  document.getElementById('output').appendChild(link);
+});
+</script>
+</body>
+</html>
