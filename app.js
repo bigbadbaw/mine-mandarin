@@ -134,6 +134,26 @@ function initApp() {
 
   // Check mic on startup for standalone mode
   checkMicOnStartup();
+
+  // Fix orientation change jitter — disable transitions during rotation
+  window.addEventListener('orientationchange', function() {
+    document.body.classList.add('no-transitions');
+    setTimeout(function() {
+      document.body.classList.remove('no-transitions');
+      // Recalculate viewport height after rotation
+      if (window.visualViewport) {
+        document.documentElement.style.setProperty('--vh', window.visualViewport.height + 'px');
+      }
+    }, 400);
+  });
+
+  // Track visual viewport height for iOS
+  if (window.visualViewport) {
+    document.documentElement.style.setProperty('--vh', window.visualViewport.height + 'px');
+    window.visualViewport.addEventListener('resize', function() {
+      document.documentElement.style.setProperty('--vh', window.visualViewport.height + 'px');
+    });
+  }
 }
 
 function initTTSOnTouch() {
@@ -599,6 +619,7 @@ function toggleEnchantFilter() {
 // ============================================================
 var speechRecAvailable = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 var recognitionActive = false;
+var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -606,9 +627,10 @@ function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
   if (recognitionActive) return;
   recognitionActive = true;
 
-  // iOS standalone PWA: pre-check getUserMedia to ensure mic permission is live
+  // iOS: always do getUserMedia pre-check before every recognition attempt
+  // iPhone is stricter than iPad about mic access in standalone/PWA mode
   var micPreCheck;
-  if (isStandalone() && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  if (isIOS && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     micPreCheck = navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
       stream.getTracks().forEach(function(track) { track.stop(); });
       console.log('[Mic] Pre-check: permission active');
@@ -633,11 +655,25 @@ function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
     recognition.continuous = false;
 
     var resultReceived = false;
+    var recTimeout = null;
 
-    recognition.onstart = function() { showListeningUI(); };
+    recognition.onstart = function() {
+      showListeningUI();
+      // iPhone cuts off after ~5s silence — show timeout prompt if no result
+      recTimeout = setTimeout(function() {
+        if (!resultReceived) {
+          console.warn('[Mic] 5s timeout — no result received');
+          try { recognition.abort(); } catch(e) {}
+          recognitionActive = false;
+          hideListeningUI();
+          showNoSpeechUI();
+        }
+      }, 5500);
+    };
 
     recognition.onresult = function(event) {
       resultReceived = true;
+      if (recTimeout) clearTimeout(recTimeout);
       hideListeningUI();
       var alternatives = Array.from(event.results[0]).map(function(r) { return r.transcript.trim(); });
       console.log('Heard:', alternatives);
@@ -651,6 +687,7 @@ function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
 
     recognition.onerror = function(event) {
       console.error('Speech recognition error:', event.error);
+      if (recTimeout) clearTimeout(recTimeout);
       hideListeningUI();
       resultReceived = true;
       if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
@@ -664,6 +701,7 @@ function startMicRecognition(expectedText, onSuccess, onFail, onUnavailable) {
     };
 
     recognition.onend = function() {
+      if (recTimeout) clearTimeout(recTimeout);
       recognitionActive = false;
       hideListeningUI();
       if (!resultReceived) {
@@ -758,10 +796,12 @@ function renderReadSayCard(word) {
     '<button class="mc-btn mc-btn-primary" onclick="markCorrect()">' + mcIcon('emerald', 16) + ' Got it</button>' +
     '<button class="mc-btn mc-btn-danger" onclick="markWrong()">' + mcIcon('redstone', 16) + ' Again</button></div>';
 
+  var iosHint = isIOS ? '<div class="ios-mic-hint">TAP MIC THEN SPEAK IMMEDIATELY</div>' : '';
+
   if (speechRecAvailable) {
     return '<div class="card-prompt">Read this out loud:</div>' +
       '<div class="card-chinese' + sz + '" lang="zh-CN">' + word.chinese + '</div>' +
-      ttsBtn + micBtnHTML +
+      ttsBtn + micBtnHTML + iosHint +
       '<div class="speech-result" id="speech-result"></div>' +
       '<div class="card-reveal" id="card-reveal">' +
         '<div class="card-pinyin">' + word.pinyin + '</div>' +
@@ -849,10 +889,12 @@ function renderSayItCard(word) {
     (showPinyinHint ? 'HIDE' : 'SHOW') + ' PINYIN</button>';
   var pinyinLine = showPinyinHint ? '<div class="card-pinyin">' + word.pinyin + '</div>' : '';
 
+  var iosHint = isIOS ? '<div class="ios-mic-hint">TAP MIC THEN SPEAK IMMEDIATELY</div>' : '';
+
   if (speechRecAvailable) {
     return '<div class="card-prompt">Say this in Chinese:</div>' +
       '<div class="card-english" style="font-size:24px">' + word.english + '</div>' +
-      hint + pinyinLine + micBtnHTML +
+      hint + pinyinLine + micBtnHTML + iosHint +
       '<div class="speech-result" id="speech-result"></div>' +
       '<div class="card-reveal" id="card-reveal">' +
         '<div class="card-chinese" lang="zh-CN" style="font-size:56px">' + word.chinese + '</div>' +

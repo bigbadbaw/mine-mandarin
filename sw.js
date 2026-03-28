@@ -1,5 +1,5 @@
-var CACHE_NAME = 'mine-mandarin-v10';
-var CDN_CACHE_NAME = 'mine-mandarin-cdn-v10';
+var CACHE_NAME = 'mine-mandarin-v12';
+var CDN_CACHE_NAME = 'mine-mandarin-cdn-v12';
 
 // Every local file the app needs offline
 var STATIC_ASSETS = [

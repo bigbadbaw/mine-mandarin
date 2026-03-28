@@ -1,6 +1,26 @@
 /* Mine Mandarin — Minecraft Theme — Fluid Responsive */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+/* Orientation change jitter fix — kills all transitions/animations during rotation */
+.no-transitions *,
+.no-transitions *::before,
+.no-transitions *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* iOS mic hint */
+.ios-mic-hint {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(5px, 0.9vw, 7px);
+  color: #FFD700;
+  text-shadow: 1px 1px 0 #000;
+  text-align: center;
+  opacity: 0.7;
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
 /* ============================================================
    PASSWORD GATE
    ============================================================ */
@@ -850,10 +870,25 @@ html, body {
 
 /* 1 char: max 280, 2 chars: max 240, 3 chars: max 180, 4 chars: max 200 (2x2) */
 .mine-grid-row .mine-canvas-box {
-  width: clamp(120px, calc((90vw - 12px * (var(--char-count) - 1)) / var(--char-count)), 280px);
+  width: clamp(100px, calc((90vw - 12px * (var(--char-count) - 1)) / var(--char-count)), 280px);
 }
 .mine-grid-2x2 .mine-canvas-box {
-  width: clamp(120px, calc((90vw - 12px) / 2), 200px);
+  width: clamp(100px, calc((90vw - 12px) / 2), 200px);
+}
+
+/* iPhone / narrow screens: stack vertically when side-by-side would be too small */
+@media (max-width: 500px) {
+  .mine-canvas-grid.mine-grid-row[style*="--char-count:3"],
+  .mine-canvas-grid.mine-grid-row[style*="--char-count: 3"] {
+    flex-wrap: wrap;
+  }
+  .mine-canvas-grid.mine-grid-row[style*="--char-count:3"] .mine-canvas-box,
+  .mine-canvas-grid.mine-grid-row[style*="--char-count: 3"] .mine-canvas-box {
+    width: min(160px, 45vw);
+  }
+  .mine-canvas-grid.mine-grid-2x2 .mine-canvas-box {
+    width: min(150px, 42vw);
+  }
 }
 
 .mine-char-canvas {
