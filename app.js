@@ -2,7 +2,7 @@
 
 // ========== STATE ==========
 var currentModule = null;
-var currentMode = 'all';
+var currentFilter = { unit: 'all', week: null };
 var sessionQueue = [];
 var sessionIndex = 0;
 var sessionXP = 0;
@@ -78,6 +78,213 @@ function showWrongPasswordFeedback() {
   if (msg) msg.style.display = 'block';
   var input = document.getElementById('password-input');
   if (input) { input.value = ''; input.focus(); }
+}
+
+// ========== LESSON FILTER (Unit / Week two-level) ==========
+var UNIT_DEFS = [
+  { id: 'all', label: 'ALL' },
+  { id: 'SU4', label: 'SU4' },
+  { id: 'U1',  label: 'Unit 1' },
+  { id: 'U2',  label: 'Unit 2' },
+  { id: 'U3',  label: 'Unit 3' },
+  { id: 'U4',  label: 'Unit 4' },
+  { id: 'U5',  label: 'Unit 5' },
+  { id: 'U6',  label: 'Unit 6' },
+  { id: 'U7',  label: 'Unit 7' }
+];
+
+var WEEK_DEFS = {
+  SU4: [
+    { id: 'U3L1', label: 'U3-L1' },
+    { id: 'U3L2', label: 'U3-L2' },
+    { id: 'U3L3', label: 'U3-L3' },
+    { id: 'U5L1', label: 'U5-L1' },
+    { id: 'U5L2', label: 'U5-L2' },
+    { id: 'U5L3', label: 'U5-L3' }
+  ],
+  U1: [
+    { id: 'W1', label: 'W1 你好' },
+    { id: 'W2', label: 'W2 上学路上' },
+    { id: 'W3', label: 'W3 美洲原住民' },
+    { id: 'W4', label: 'W4 加州历史' },
+    { id: 'W5', label: 'W5 方向' }
+  ],
+  U2: [
+    { id: 'W1', label: 'W1 尊重' },
+    { id: 'W2', label: 'W2 美国文化' },
+    { id: 'W3', label: 'W3 马丁路德金' },
+    { id: 'W4', label: 'W4 加州政府' }
+  ],
+  U3: [
+    { id: 'W1', label: 'W1 加州柑橘' },
+    { id: 'W2', label: 'W2 华特迪士尼' },
+    { id: 'W3', label: 'W3 中国探险家' },
+    { id: 'W4', label: 'W4 加州开拓者' }
+  ],
+  U4: [
+    { id: 'W1', label: 'W1 地图' },
+    { id: 'W2', label: 'W2 加州' },
+    { id: 'W3', label: 'W3 多少钱' },
+    { id: 'W4', label: 'W4 当地食物' }
+  ],
+  U5: [
+    { id: 'W1', label: 'W1 仙人掌' },
+    { id: 'W2', label: 'W2 植物的生长' },
+    { id: 'W3', label: 'W3 动物和栖息地' }
+  ],
+  U6: [
+    { id: 'W1', label: 'W1 天气' },
+    { id: 'W2', label: 'W2 暴风雨' },
+    { id: 'W3', label: 'W3 房子' }
+  ],
+  U7: [
+    { id: 'W1', label: 'W1 不一样的力' },
+    { id: 'W2', label: 'W2 摩擦力' }
+  ]
+};
+
+function getFilteredWords() {
+  var unit = currentFilter.unit;
+  var week = currentFilter.week;
+  if (unit === 'all') return WORDS;
+  if (unit === 'SU4') {
+    if (!week) return WORDS.filter(function(w) { return w.source === 'SU4'; });
+    return WORDS.filter(function(w) { return w.source === 'SU4' && w.group === week; });
+  }
+  if (!week) return WORDS.filter(function(w) { return w.source === unit; });
+  return WORDS.filter(function(w) { return w.source === unit && w.group === week; });
+}
+
+function countForUnit(unitId) {
+  if (unitId === 'all') return WORDS.length;
+  return WORDS.filter(function(w) { return w.source === unitId; }).length;
+}
+
+function countForWeek(unitId, weekId) {
+  return WORDS.filter(function(w) { return w.source === unitId && w.group === weekId; }).length;
+}
+
+function pickFilterUnit(unitId, context) {
+  currentFilter = { unit: unitId, week: null };
+  refreshFilterUIs();
+  applyFilterContext(context);
+}
+
+function pickFilterWeek(weekId, context) {
+  // weekId === '' means "all weeks for this unit"
+  currentFilter.week = weekId || null;
+  refreshFilterUIs();
+  applyFilterContext(context);
+}
+
+function applyFilterContext(context) {
+  if (context === 'enchant') {
+    var fw = getFilteredWords();
+    if (fw.length === 0) { alert('No words here!'); return; }
+    enchantWords = fw;
+    enchantIndex = 0;
+    renderEnchantCard();
+  } else if (context === 'wordlist') {
+    renderWordListItems();
+  }
+}
+
+function refreshFilterUIs() {
+  var contexts = [
+    { id: 'home-filter-container', ctx: 'home' },
+    { id: 'enchant-filter-container', ctx: 'enchant' },
+    { id: 'wordlist-filters', ctx: 'wordlist' }
+  ];
+  contexts.forEach(function(c) {
+    var el = document.getElementById(c.id);
+    if (el) renderFilterBar(el, c.ctx);
+  });
+}
+
+function renderFilterBar(container, context) {
+  var activeBg = '#5A9B3C';
+  var activeBorder = '#7DC95A';
+  var rowStyle =
+    'flex-shrink:0;display:flex;gap:clamp(4px,0.8vw,8px);' +
+    'padding:clamp(4px,0.8vw,8px) clamp(6px,1vw,12px);' +
+    'overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;' +
+    'white-space:nowrap';
+
+  function btn(label, isActive, onclickJS) {
+    var extra = isActive
+      ? 'background:' + activeBg + ';border-color:' + activeBorder + ';color:white;'
+      : '';
+    return '<button class="wl-filter-btn' + (isActive ? ' wl-filter-active' : '') + '"' +
+      ' style="' + extra + '"' +
+      ' onclick="' + onclickJS + '">' + label + '</button>';
+  }
+
+  var unit = currentFilter.unit;
+  var week = currentFilter.week;
+
+  var row1Html = UNIT_DEFS.map(function(u) {
+    var c = countForUnit(u.id);
+    var label = u.label + ' (' + c + ')';
+    var isActive = u.id === unit;
+    return btn(label, isActive, "pickFilterUnit('" + u.id + "','" + context + "')");
+  }).join('');
+
+  var row2Html = '';
+  if (unit !== 'all') {
+    var weeks = WEEK_DEFS[unit] || [];
+    var allLabel = 'All ' + unit + ' (' + countForUnit(unit) + ')';
+    row2Html = btn(allLabel, !week, "pickFilterWeek('','" + context + "')");
+    row2Html += weeks.map(function(w) {
+      var c = countForWeek(unit, w.id);
+      var label = w.label + ' (' + c + ')';
+      var isActive = w.id === week;
+      return btn(label, isActive, "pickFilterWeek('" + w.id + "','" + context + "')");
+    }).join('');
+  }
+
+  var html = '<div style="' + rowStyle + '">' + row1Html + '</div>';
+  if (row2Html) {
+    html += '<div style="' + rowStyle + '">' + row2Html + '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function mountFilterBar(context) {
+  var anchor, beforeNode, containerId;
+  if (context === 'home') {
+    // Hide legacy mode selector wrapper (parent of #mode-dropdown)
+    var modeDD = document.getElementById('mode-dropdown');
+    if (modeDD && modeDD.parentElement) modeDD.parentElement.style.display = 'none';
+    containerId = 'home-filter-container';
+    if (!document.getElementById(containerId)) {
+      var moduleTiles = document.getElementById('module-tiles');
+      var c = document.createElement('div');
+      c.id = containerId;
+      c.style.cssText = 'width:100%;margin:clamp(4px,0.8vh,10px) 0';
+      moduleTiles.parentElement.insertBefore(c, moduleTiles);
+    }
+  } else if (context === 'enchant') {
+    var ddEnchant = document.getElementById('enchant-filter-dropdown');
+    if (ddEnchant && ddEnchant.parentElement) ddEnchant.parentElement.style.display = 'none';
+    containerId = 'enchant-filter-container';
+    if (!document.getElementById(containerId)) {
+      var enchantCardArea = document.querySelector('#enchant-screen .enchant-card-area');
+      var c2 = document.createElement('div');
+      c2.id = containerId;
+      c2.style.cssText = 'width:100%;padding:0 clamp(8px,1.5vw,16px)';
+      enchantCardArea.parentElement.insertBefore(c2, enchantCardArea);
+    }
+  } else if (context === 'wordlist') {
+    containerId = 'wordlist-filters';
+    var wf = document.getElementById(containerId);
+    if (wf) {
+      wf.style.display = 'block';
+      wf.style.padding = '0';
+      wf.style.overflow = 'visible';
+    }
+  }
+  var el = document.getElementById(containerId);
+  if (el) renderFilterBar(el, context);
 }
 
 // ========== INIT ==========
@@ -326,6 +533,9 @@ function renderHome() {
   // Top bar
   updateHomeTopBar(xp, tier);
   updateCreeper('idle');
+
+  // Two-level lesson filter (above module tiles)
+  mountFilterBar('home');
 }
 
 function updateHomeTopBar(xp, tier) {
@@ -333,16 +543,9 @@ function updateHomeTopBar(xp, tier) {
   document.getElementById('home-topbar-xp').textContent = xp;
 }
 
-// ========== STUDY MODE ==========
-function selectMode(mode) {
-  currentMode = mode;
-  document.getElementById('mode-label').textContent = STUDY_MODES[mode].label;
-}
-
-function openModeSelector() {
-  var el = document.getElementById('mode-dropdown');
-  el.style.display = el.style.display === 'none' ? 'block' : 'none';
-}
+// ========== STUDY MODE (legacy stubs — replaced by two-level filter) ==========
+function selectMode() { /* legacy no-op — superseded by pickFilterUnit/pickFilterWeek */ }
+function openModeSelector() { /* legacy no-op — superseded by pickFilterUnit/pickFilterWeek */ }
 
 // ========== START MODULE ==========
 function startModule(module) {
@@ -355,8 +558,7 @@ function startModule(module) {
     return;
   }
 
-  var modeFilter = STUDY_MODES[currentMode].filter;
-  var filtered = WORDS.filter(modeFilter);
+  var filtered = getFilteredWords();
   if (filtered.length === 0) { alert('No words in this category yet!'); return; }
 
   sessionQueue = buildSessionQueue(filtered);
@@ -438,16 +640,14 @@ function checkMilestoneAchievements() {
 // ============================================================
 var enchantWords = [];
 var enchantIndex = 0;
-var enchantMode = 'all';
 var enchantWriters = [];
 
 function startEnchantTable() {
-  enchantMode = currentMode;
-  var modeFilter = STUDY_MODES[enchantMode].filter;
-  enchantWords = WORDS.filter(modeFilter);
+  enchantWords = getFilteredWords();
   if (enchantWords.length === 0) { alert('No words in this category!'); return; }
   enchantIndex = 0;
   showScreen('enchant-screen');
+  mountFilterBar('enchant');
   renderEnchantCard();
 }
 
@@ -474,7 +674,7 @@ function renderEnchantCard() {
   }).join('');
 
   container.innerHTML =
-    '<div class="enchant-unit">' + word.unit + '</div>' +
+    '<div class="enchant-unit">' + word.source + ' · ' + word.group + '</div>' +
     '<div class="card-chinese' + (word.chinese.length > 3 ? ' small' : '') + '" lang="zh-CN">' + word.chinese + '</div>' +
     '<div class="card-pinyin">' + word.pinyin + '</div>' +
     '<div class="card-english">' + word.english + '</div>' +
@@ -603,21 +803,8 @@ function speakEnchant() {
 function enchantPrev() { if (enchantIndex > 0) { enchantIndex--; renderEnchantCard(); } }
 function enchantNext() { if (enchantIndex < enchantWords.length - 1) { enchantIndex++; renderEnchantCard(); } }
 
-function selectEnchantFilter(mode) {
-  enchantMode = mode;
-  var modeFilter = STUDY_MODES[mode].filter;
-  enchantWords = WORDS.filter(modeFilter);
-  if (enchantWords.length === 0) { alert('No words here!'); return; }
-  enchantIndex = 0;
-  document.getElementById('enchant-filter-label').textContent = STUDY_MODES[mode].label;
-  document.getElementById('enchant-filter-dropdown').style.display = 'none';
-  renderEnchantCard();
-}
-
-function toggleEnchantFilter() {
-  var el = document.getElementById('enchant-filter-dropdown');
-  el.style.display = el.style.display === 'none' ? 'block' : 'none';
-}
+function selectEnchantFilter() { /* legacy no-op — replaced by two-level filter */ }
+function toggleEnchantFilter() { /* legacy no-op — replaced by two-level filter */ }
 
 // ============================================================
 //  SHARED SPEECH RECOGNITION ENGINE
@@ -1717,20 +1904,10 @@ function showComplete() {
 }
 
 // ========== WORD LIST OVERLAY ==========
-var wordlistFilterMode = 'all';
-
 function openWordListOverlay() {
   var overlay = document.getElementById('wordlist-overlay');
   overlay.style.display = 'flex';
-
-  // Build filter buttons
-  var filters = document.getElementById('wordlist-filters');
-  var modes = ['all','u3','u5','u3l1','u3l2','u3l3','u5l1','u5l2','u5l3'];
-  filters.innerHTML = modes.map(function(m) {
-    var active = m === wordlistFilterMode ? ' wl-filter-active' : '';
-    return '<button class="wl-filter-btn' + active + '" onclick="filterWordList(\'' + m + '\')">' + STUDY_MODES[m].label + '</button>';
-  }).join('');
-
+  mountFilterBar('wordlist');
   renderWordListItems();
 }
 
@@ -1738,18 +1915,11 @@ function closeWordListOverlay() {
   document.getElementById('wordlist-overlay').style.display = 'none';
 }
 
-function filterWordList(mode) {
-  wordlistFilterMode = mode;
-  // Update active state
-  document.querySelectorAll('.wl-filter-btn').forEach(function(btn) { btn.classList.remove('wl-filter-active'); });
-  event.target.classList.add('wl-filter-active');
-  renderWordListItems();
-}
+function filterWordList() { /* legacy no-op — replaced by two-level filter */ }
 
 function renderWordListItems() {
   var container = document.getElementById('wordlist-items');
-  var modeFilter = STUDY_MODES[wordlistFilterMode].filter;
-  var filtered = WORDS.filter(modeFilter);
+  var filtered = getFilteredWords();
   var prog = loadProgress();
 
   container.innerHTML = filtered.map(function(w) {
